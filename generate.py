@@ -21,57 +21,70 @@ def format_size(bytes_num):
         bytes_num /= 1024.0
     return f"{bytes_num:.1f} ГБ"
 
+def fetch_by_item_id(item_id):
+    """Точный запрос к Apple по уникальному цифровому ID покупки из iMazing"""
+    if not item_id:
+        return ""
+    for country in ["ru", "us", "kz"]:
+        try:
+            url = f"https://itunes.apple.com/lookup?id={item_id}&country={country}"
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=3) as resp:
+                data = json.loads(resp.read().decode())
+                if data.get("resultCount", 0) > 0:
+                    res = data["results"][0]
+                    return res.get("artworkUrl512", res.get("artworkUrl100", ""))
+        except Exception:
+            pass
+    return ""
+
 def extract_icon_from_ipa(z, plist_path, dest_path):
-    """Достает родную иконку прямо из IPA-файла iMazing"""
-    # 1. Приоритет №1: iTunesArtwork (родная HD-иконка, которую кладет сам iMazing/Apple в корень IPA)
+    # 1. Поиск iTunesArtwork в корне архива
     for name in z.namelist():
         if name.lower() in ["itunesartwork", "itunesartwork.png", "itunesartwork@2x"]:
             try:
                 raw_data = z.read(name)
                 img = Image.open(BytesIO(raw_data))
                 img.convert("RGBA").save(dest_path, format="PNG")
-                print(f"-> Найдена родная iTunesArtwork: {name}")
-                return True
-            except Exception as e:
-                print(f"Ошибка чтения {name}: {e}")
-
-    # 2. Приоритет №2: Настоящие иконки AppIcon из папки .app
-    app_dir = os.path.dirname(plist_path)
-    
-    # Ищем файлы с AppIcon в названии
-    icon_files = [n for n in z.namelist() if n.startswith(app_dir) and "appicon" in n.lower() and n.endswith(".png")]
-    
-    # Фильтруем системные ошметки (строки состояния, уведомления 20x20 и т.д.)
-    valid_icons = []
-    for f in icon_files:
-        low = f.lower()
-        if any(bad in low for bad in ["20x20", "29x29", "40x40", "small", "badge"]):
-            continue
-        valid_icons.append(f)
-
-    if not valid_icons:
-        valid_icons = icon_files
-
-    if valid_icons:
-        # Сортируем по весу (самая большая — основная иконка для экрана)
-        valid_icons.sort(key=lambda x: z.getinfo(x).file_size, reverse=True)
-        for cand in valid_icons:
-            try:
-                raw_data = z.read(cand)
-                img = Image.open(BytesIO(raw_data))
-                img.convert("RGBA").save(dest_path, format="PNG")
-                print(f"-> Извлечена иконка из приложения: {cand}")
                 return True
             except Exception:
-                # Если сырой Apple PNG (CgBI) не открылся стандартно, сохраняем как есть
-                with open(dest_path, "wb") as out_f:
-                    out_f.write(raw_data)
+                with open(dest_path, "wb") as f:
+                    f.write(raw_data)
                 return True
+
+    # 2. Поиск любых файлов иконок внутри Payload
+    app_dir = os.path.dirname(plist_path)
+    candidates = [
+        n for n in z.namelist() 
+        if n.startswith(app_dir) and n.endswith(".png") and any(k in n.lower() for k in ["appicon", "icon", "60x60", "76x76"])
+    ]
+
+    # Исключаем системные мелочи
+    valid = [c for c in candidates if not any(b in c.lower() for b in ["20x20", "29x29", "notification", "small"])]
+    if not valid:
+        valid = candidates
+
+    if valid:
+        valid.sort(key=lambda x: z.getinfo(x).file_size, reverse=True)
+        for cand in valid[:4]:
+            try:
+                raw_data = z.read(cand)
+                try:
+                    img = Image.open(BytesIO(raw_data))
+                    img.convert("RGBA").save(dest_path, format="PNG")
+                    return True
+                except Exception:
+                    # Сохраняем сырой байтстрим
+                    with open(dest_path, "wb") as f:
+                        f.write(raw_data)
+                    return True
+            except Exception:
+                continue
 
     return False
 
 def inspect_ipa(ipa_path, download_url):
-    print(f"\n=== Обработка {ipa_path} ===")
+    print(f"\n--- Анализ {ipa_path} ---")
     size_str = format_size(os.path.getsize(ipa_path))
 
     with zipfile.ZipFile(ipa_path, 'r') as z:
@@ -82,30 +95,65 @@ def inspect_ipa(ipa_path, download_url):
                 break
 
         if not plist_path:
-            print("Info.plist не найден!")
             return None
 
+        # Читаем Info.plist
         with z.open(plist_path) as f:
             try:
                 plist_data = plistlib.load(f)
             except Exception as e:
-                print(f"Ошибка plist: {e}")
+                print(f"Ошибка Info.plist: {e}")
                 return None
+
+        # Проверяем iTunesMetadata.plist от iMazing
+        item_id = None
+        for meta_name in ["iTunesMetadata.plist", "Payload/iTunesMetadata.plist"]:
+            if meta_name in z.namelist():
+                try:
+                    with z.open(meta_name) as mf:
+                        m_data = plistlib.load(mf)
+                        item_id = m_data.get("itemId") or m_data.get("playlistId")
+                        if item_id:
+                            print(f"-> Найден официальный Store ID: {item_id}")
+                            break
+                except Exception:
+                    pass
 
         bundle_id = plist_data.get("CFBundleIdentifier", "unknown.bundle")
         version = plist_data.get("CFBundleShortVersionString", plist_data.get("CFBundleVersion", "1.0.0"))
         name = plist_data.get("CFBundleDisplayName", plist_data.get("CFBundleName", "App"))
 
-        # Вытаскиваем РОДНУЮ иконку из IPA
         icon_filename = f"{bundle_id}.png"
         icon_dest = os.path.join("icons", icon_filename)
+
+        # 1. Сначала пробуем вытащить родную иконку прямо из архива
+        has_local = extract_icon_from_ipa(z, plist_path, icon_dest)
         
-        has_icon = extract_icon_from_ipa(z, plist_path, icon_dest)
-        
-        if has_icon:
+        icon_url = ""
+        if has_local:
             icon_url = f"{BASE_URL}/icons/{icon_filename}?v={version}"
-        else:
-            icon_url = "https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png"
+        elif item_id:
+            # 2. Если внутри Assets.car — берем оригинальную обложку по точному itemId
+            store_icon = fetch_by_item_id(item_id)
+            if store_icon:
+                icon_url = store_icon
+
+        if not icon_url:
+            # 3. Запасной fallback по точному Bundle ID (без текстового поиска)
+            for country in ["ru", "us"]:
+                try:
+                    u = f"https://itunes.apple.com/lookup?bundleId={bundle_id}&country={country}"
+                    r = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})
+                    with urllib.request.urlopen(r, timeout=3) as resp:
+                        d = json.loads(resp.read().decode())
+                        if d.get("resultCount", 0) > 0:
+                            icon_url = d["results"][0].get("artworkUrl512", "")
+                            break
+                except Exception:
+                    pass
+
+        if not icon_url:
+            icon_url = f"{BASE_URL}/icons/{icon_filename}"
 
         # Manifest
         manifest_filename = f"{bundle_id}.plist"
@@ -166,7 +214,7 @@ def main():
         with urllib.request.urlopen(req) as resp:
             releases = json.loads(resp.read().decode())
     except Exception as e:
-        print(f"Ошибка релизов: {e}")
+        print(f"Ошибка: {e}")
         releases = []
 
     apps_data = []
@@ -191,7 +239,7 @@ def main():
     with open("apps.json", "w", encoding="utf-8") as f:
         json.dump(apps_data, f, ensure_ascii=False, indent=2)
 
-    print(f"\nВсе готово! Родные иконки извлечены для {len(apps_data)} приложений.")
+    print(f"\nГотово! Обработано {len(apps_data)} приложений.")
 
 if __name__ == "__main__":
     main()
