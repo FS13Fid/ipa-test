@@ -121,7 +121,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .header-title-box h1 {
@@ -164,7 +164,7 @@
 
         .search-container {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 26px;
         }
 
         .search-bar {
@@ -202,41 +202,6 @@
             width: 18px;
             height: 18px;
             pointer-events: none;
-        }
-
-        .filters-row {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 14px;
-            margin-bottom: 24px;
-            scrollbar-width: none;
-        }
-
-        .filters-row::-webkit-scrollbar {
-            display: none;
-        }
-
-        .filter-chip {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-top: 1px solid var(--card-specular);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .filter-chip.active {
-            background: var(--text-primary);
-            color: var(--bg-base);
-            border-color: var(--text-primary);
         }
 
         .apps-grid {
@@ -515,13 +480,6 @@
             <input type="text" class="search-bar" id="searchInput" placeholder="Поиск по названию или bundle id...">
         </div>
 
-        <div class="filters-row">
-            <div class="filter-chip active" data-cat="all">Все</div>
-            <div class="filter-chip" data-cat="Утилиты">Утилиты</div>
-            <div class="filter-chip" data-cat="Покупки">Покупки</div>
-            <div class="filter-chip" data-cat="Социальные">Социальные</div>
-        </div>
-
         <div class="apps-grid" id="appsGrid">
             <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">
                 Загрузка каталога...
@@ -529,13 +487,12 @@
         </div>
     </div>
 
-    <!-- Модальное окно деталей -->
     <div class="modal-overlay" id="appModal">
         <div class="modal-sheet">
             <button class="modal-close" onclick="closeModal()">✕</button>
             <div class="modal-header">
                 <div class="modal-icon-wrapper" id="modalIconBox">
-                    <span id="modalIconLetter">K</span>
+                    <span id="modalIconLetter">A</span>
                     <img id="modalIconImg" class="app-icon-img" src="" alt="" style="display:none;" onerror="this.style.display='none'">
                 </div>
                 <div class="app-info">
@@ -569,7 +526,6 @@
 
     <script>
         let appsData = [];
-        let currentFilter = 'all';
 
         const themeBtn = document.getElementById('themeBtn');
         let isDark = true;
@@ -600,10 +556,8 @@
             grid.innerHTML = '';
 
             const filtered = appsData.filter(app => {
-                const matchesCategory = currentFilter === 'all' || (app.category && app.category.toLowerCase() === currentFilter.toLowerCase());
-                const matchesQuery = app.name.toLowerCase().includes(query) || 
-                                     app.bundleId.toLowerCase().includes(query);
-                return matchesCategory && matchesQuery;
+                return (app.name || '').toLowerCase().includes(query) || 
+                       (app.bundleId || '').toLowerCase().includes(query);
             });
 
             if (filtered.length === 0) {
@@ -673,15 +627,6 @@
         }
 
         document.getElementById('searchInput').addEventListener('input', renderApps);
-
-        document.querySelectorAll('.filter-chip').forEach(chip => {
-            chip.addEventListener('click', () => {
-                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                currentFilter = chip.dataset.cat;
-                renderApps();
-            });
-        });
 
         window.addEventListener('click', (e) => {
             const modal = document.getElementById('appModal');
