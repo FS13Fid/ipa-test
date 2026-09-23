@@ -1,12 +1,10 @@
 import os
 import re
 import json
-import struct
-import zlib
 import zipfile
 import plistlib
 import urllib.request
-from io import BytesIO
+import urllib.parse
 from PIL import Image
 
 REPO_OWNER = os.environ.get("GITHUB_REPOSITORY_OWNER", "FS13Fid")
@@ -15,6 +13,7 @@ BASE_URL = f"https://{REPO_OWNER.lower()}.github.io/{REPO_NAME}"
 
 os.makedirs("manifests", exist_ok=True)
 os.makedirs("icons", exist_ok=True)
+os.makedirs("custom-icons", exist_ok=True)
 
 def format_size(bytes_num):
     for unit in ['Б', 'КБ', 'МБ', 'ГБ']:
@@ -23,85 +22,31 @@ def format_size(bytes_num):
         bytes_num /= 1024.0
     return f"{bytes_num:.1f} ГБ"
 
-def fix_cgbi_png(data):
-    """Декодирует оптимизированный Apple CgBI PNG в стандартный формат."""
-    try:
-        # Пробуем открыть напрямую через Pillow
-        img = Image.open(BytesIO(data))
-        img.load()
-        out = BytesIO()
-        img.convert("RGBA").save(out, format="PNG")
-        return out.getvalue()
-    except Exception:
-        pass
-
-    try:
-        # Ручной парсинг Apple CgBI чанка
-        if data[:8] != b'\x89PNG\r\n\x1a\n':
-            return None
-
-        pos = 8
-        chunks = []
-        is_cgbi = False
-
-        while pos < len(data):
-            length = struct.unpack('>I', data[pos:pos+4])[0]
-            chunk_type = data[pos+4:pos+8]
-            chunk_data = data[pos+8:pos+8+length]
-            crc = data[pos+8+length:pos+12+length]
-            pos += 12 + length
-
-            if chunk_type == b'CgBI':
-                is_cgbi = True
-                continue
-            chunks.append((chunk_type, chunk_data))
-
-        if not is_cgbi:
-            return data
-
-        # Собираем декомпрессированный IDAT
-        idat_acc = b""
-        width, height = 0, 0
-        for c_type, c_data in chunks:
-            if c_type == b'IHDR':
-                width, height = struct.unpack('>II', c_data[:8])
-            elif c_type == b'IDAT':
-                idat_acc += c_data
-
-        decompressed = zlib.decompress(idat_acc, -15)
-        # Apple CgBI меняет RGBA на BGRA, переставляем каналы обратно
-        stride = width * 4 + 1
-        raw_pixels = bytearray()
-        for y in range(height):
-            line = decompressed[y*stride : (y+1)*stride]
-            filter_byte = line[0:1]
-            pixels = line[1:]
-            fixed_pixels = bytearray()
-            for x in range(0, len(pixels), 4):
-                b, g, r, a = pixels[x:x+4]
-                fixed_pixels.extend([r, g, b, a])
-            raw_pixels.extend(filter_byte + fixed_pixels)
-
-        img = Image.frombytes("RGBA", (width, height), bytes(raw_pixels), "raw", "RGBA", stride, 1)
-        out = BytesIO()
-        img.save(out, format="PNG")
-        return out.getvalue()
-    except Exception as e:
-        print(f"Ошибка декодирования CgBI: {e}")
-        return None
-
-def fetch_itunes_icon(bundle_id):
-    for country in ["ru", "us", "kz", "am"]:
+def fetch_itunes_icon(bundle_id, app_name):
+    # 1. Поиск по bundleId
+    for country in ["ru", "us", "kz"]:
         try:
             url = f"https://itunes.apple.com/lookup?bundleId={bundle_id}&country={country}"
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=4) as resp:
                 data = json.loads(resp.read().decode())
                 if data.get("resultCount", 0) > 0:
-                    item = data["results"][0]
-                    return item.get("artworkUrl512", item.get("artworkUrl100", ""))
+                    return data["results"][0].get("artworkUrl512", data["results"][0].get("artworkUrl100", ""))
         except Exception:
             pass
+
+    # 2. Поиск по названию приложения
+    try:
+        query = urllib.parse.quote(app_name)
+        url = f"https://itunes.apple.com/search?term={query}&entity=software&country=ru&limit=1"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=4) as resp:
+            data = json.loads(resp.read().decode())
+            if data.get("resultCount", 0) > 0:
+                return data["results"][0].get("artworkUrl512", data["results"][0].get("artworkUrl100", ""))
+    except Exception:
+        pass
+
     return ""
 
 def inspect_ipa(ipa_path, download_url):
@@ -129,37 +74,39 @@ def inspect_ipa(ipa_path, download_url):
         version = plist_data.get("CFBundleShortVersionString", plist_data.get("CFBundleVersion", "1.0.0"))
         name = plist_data.get("CFBundleDisplayName", plist_data.get("CFBundleName", "App"))
 
-        # 1. Сначала пробуем iTunes API
-        icon_url = fetch_itunes_icon(bundle_id)
+        icon_filename = f"{bundle_id}.png"
+        icon_dest = os.path.join("icons", icon_filename)
+        custom_icon_path = os.path.join("custom-icons", icon_filename)
 
-        # 2. Если в iTunes нет (удаленное приложение), декодируем оригинальную иконку из IPA
-        if not icon_url:
-            icon_filename = f"{bundle_id}.png"
-            icon_dest = os.path.join("icons", icon_filename)
-            app_dir = os.path.dirname(plist_path)
+        # 1. Приоритет: есть ли ручная иконка в custom-icons/
+        if os.path.exists(custom_icon_path):
+            with open(custom_icon_path, "rb") as src, open(icon_dest, "wb") as dst:
+                dst.write(src.read())
+            icon_url = f"{BASE_URL}/icons/{icon_filename}?t={os.path.getmtime(custom_icon_path)}"
+        else:
+            # 2. Пробуем iTunes API
+            icon_url = fetch_itunes_icon(bundle_id, name)
 
-            icon_candidates = [n for n in z.namelist() if n.startswith(app_dir) and "AppIcon" in n and n.endswith(".png")]
-            if not icon_candidates:
-                icon_candidates = [n for n in z.namelist() if n.startswith(app_dir) and n.endswith(".png") and "icon" in n.lower()]
+            # 3. Если нет в iTunes — ищем файлы иконок из архива
+            if not icon_url:
+                app_dir = os.path.dirname(plist_path)
+                candidates = [n for n in z.namelist() if n.startswith(app_dir) and "AppIcon" in n and n.endswith(".png")]
+                if not candidates:
+                    candidates = [n for n in z.namelist() if n.startswith(app_dir) and n.endswith(".png") and "icon" in n.lower()]
 
-            if icon_candidates:
-                icon_candidates.sort(key=lambda x: z.getinfo(x).file_size, reverse=True)
-                for cand in icon_candidates[:3]:
+                if candidates:
+                    candidates.sort(key=lambda x: z.getinfo(x).file_size, reverse=True)
                     try:
-                        raw_data = z.read(cand)
-                        cleaned = fix_cgbi_png(raw_data)
-                        if cleaned:
-                            with open(icon_dest, "wb") as out_f:
-                                out_f.write(cleaned)
-                            icon_url = f"{BASE_URL}/icons/{icon_filename}?v={version}"
-                            break
+                        with z.open(candidates[0]) as src, open(icon_dest, "wb") as dst:
+                            dst.write(src.read())
+                        icon_url = f"{BASE_URL}/icons/{icon_filename}?v={version}"
                     except Exception as e:
-                        print(f"Ошибка обработки {cand}: {e}")
+                        print(f"Ошибка сохранения: {e}")
 
         if not icon_url:
             icon_url = "https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png"
 
-        # Создаем manifest.plist
+        # Manifest
         manifest_filename = f"{bundle_id}.plist"
         manifest_path = os.path.join("manifests", manifest_filename)
         manifest_content = f"""<?xml version="1.0" encoding="UTF-8"?>
