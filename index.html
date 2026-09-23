@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IPA Studio — Liquid Catalog</title>
+    <title>IPA Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-base: #07090e;
             --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.65);
-            --card-bg: rgba(255, 255, 255, 0.06);
-            --card-border: rgba(255, 255, 255, 0.12);
-            --card-specular: rgba(255, 255, 255, 0.25);
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-specular: rgba(255, 255, 255, 0.22);
             --accent-glow: #0a84ff;
-            --btn-bg: rgba(255, 255, 255, 0.12);
+            --btn-bg: rgba(255, 255, 255, 0.1);
             --btn-text: #5ac8fa;
             --input-bg: rgba(255, 255, 255, 0.06);
-            --blob-1: rgba(10, 132, 255, 0.45);
-            --blob-2: rgba(175, 82, 222, 0.4);
-            --blob-3: rgba(48, 209, 88, 0.25);
+            --blob-1: rgba(10, 132, 255, 0.4);
+            --blob-2: rgba(175, 82, 222, 0.35);
+            --blob-3: rgba(48, 209, 88, 0.2);
             --icon-bg: #1c1c1e;
         }
 
@@ -29,9 +29,9 @@
             --bg-base: #e9ecf2;
             --text-primary: #1c1c1e;
             --text-secondary: rgba(0, 0, 0, 0.55);
-            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.65);
             --card-border: rgba(255, 255, 255, 0.7);
-            --card-specular: rgba(255, 255, 255, 0.9);
+            --card-specular: rgba(255, 255, 255, 0.95);
             --accent-glow: #007aff;
             --btn-bg: rgba(0, 122, 255, 0.1);
             --btn-text: #007aff;
@@ -124,6 +124,11 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 24px;
+        }
+
+        .header-title-box {
+            user-select: none;
+            cursor: pointer;
         }
 
         .header-title-box h1 {
@@ -330,7 +335,7 @@
             transform: scale(0.97);
         }
 
-        /* MODAL */
+        /* КАТАЛОГ: МОДАЛКА */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -459,6 +464,134 @@
             text-align: center;
             box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35);
         }
+
+        /* СКРЫТНАЯ СИСТЕМНАЯ ПАНЕЛЬ (DEV HUD) */
+        .hud-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .hud-overlay.active {
+            display: flex;
+        }
+
+        .hud-panel {
+            background: #11141a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            padding: 24px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            font-family: 'JetBrains Mono', monospace;
+            color: #e5e5ea;
+        }
+
+        .hud-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 12px;
+        }
+
+        .hud-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #30d158;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-header h3::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #30d158;
+            box-shadow: 0 0 8px #30d158;
+        }
+
+        .hud-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .hud-group {
+            margin-bottom: 16px;
+        }
+
+        .hud-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .hud-input, .hud-select {
+            width: 100%;
+            background: #1c2029;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .hud-input:focus, .hud-select:focus {
+            border-color: #0a84ff;
+        }
+
+        .hud-dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 6px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .hud-dropzone:hover {
+            border-color: #0a84ff;
+            background: rgba(10, 132, 255, 0.05);
+        }
+
+        .hud-dropzone p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .hud-status {
+            font-size: 11px;
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            display: none;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -471,7 +604,7 @@
 
     <div class="wrapper">
         <header>
-            <div class="header-title-box">
+            <div class="header-title-box" id="logoBox" title="Тройной клик для панели управления">
                 <h1>IPA Studio</h1>
                 <p>Личный каталог приложений</p>
             </div>
@@ -492,6 +625,7 @@
         </div>
     </div>
 
+    <!-- Модалка просмотра для iOS -->
     <div class="modal-overlay" id="appModal">
         <div class="modal-sheet">
             <button class="modal-close" onclick="closeModal()">✕</button>
@@ -529,9 +663,45 @@
         </div>
     </div>
 
+    <!-- СКРЫТНАЯ СИСТЕМНАЯ ПАНЕЛЬ (DEV HUD) -->
+    <div class="hud-overlay" id="hudOverlay">
+        <div class="hud-panel">
+            <div class="hud-header">
+                <h3>SYSTEM CONSOLE // DEV HUD</h3>
+                <button class="hud-close" onclick="toggleHud(false)">✕</button>
+            </div>
+
+            <div class="hud-group">
+                <label class="hud-label">GitHub Access Token (repo scope)</label>
+                <input type="password" id="hudToken" class="hud-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+            </div>
+
+            <div class="hud-group">
+                <label class="hud-label">Целевое приложение</label>
+                <select id="hudAppSelect" class="hud-select">
+                    <!-- Заполняется JS -->
+                </select>
+            </div>
+
+            <div class="hud-group">
+                <label class="hud-label">Загрузка иконки (PNG / JPG)</label>
+                <div class="hud-dropzone" onclick="document.getElementById('hudFileInput').click()">
+                    <p id="hudDropText">Нажми для выбора файла иконки</p>
+                </div>
+                <input type="file" id="hudFileInput" accept="image/png, image/jpeg" style="display:none;">
+            </div>
+
+            <div id="hudStatus" class="hud-status"></div>
+        </div>
+    </div>
+
     <script>
+        const REPO_OWNER = "FS13Fid";
+        const REPO_NAME = "ipa-test";
+
         let appsData = [];
 
+        // Переключение темы
         const themeBtn = document.getElementById('themeBtn');
         let isDark = true;
         themeBtn.addEventListener('click', () => {
@@ -540,12 +710,14 @@
             themeBtn.innerText = isDark ? '🌓' : '☀️';
         });
 
+        // Загрузка списка приложений
         async function loadApps() {
             try {
                 const res = await fetch('apps.json?t=' + Date.now());
                 if (!res.ok) throw new Error('apps.json не найден');
                 appsData = await res.json();
                 renderApps();
+                populateHudSelect();
             } catch (e) {
                 console.warn(e);
                 document.getElementById('appsGrid').innerHTML = `
@@ -631,11 +803,132 @@
             document.body.style.overflow = '';
         }
 
+        /* УПРАВЛЕНИЕ DEV HUD */
+        function toggleHud(show) {
+            const hud = document.getElementById('hudOverlay');
+            if (show) {
+                document.getElementById('hudToken').value = localStorage.getItem('gh_token') || '';
+                hud.classList.add('active');
+            } else {
+                hud.classList.remove('active');
+            }
+        }
+
+        function populateHudSelect() {
+            const select = document.getElementById('hudAppSelect');
+            select.innerHTML = '';
+            appsData.forEach(app => {
+                const opt = document.createElement('option');
+                opt.value = app.bundleId;
+                opt.textContent = `${app.name} (${app.bundleId})`;
+                select.appendChild(opt);
+            });
+        }
+
+        // Хоткей: Cmd + Shift + D (Mac) или Ctrl + Shift + D
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.code === 'KeyD') {
+                e.preventDefault();
+                const hud = document.getElementById('hudOverlay');
+                toggleHud(!hud.classList.contains('active'));
+            }
+        });
+
+        // Тач: Тройной тап по логотипу
+        let tapCount = 0;
+        let tapTimer = null;
+        document.getElementById('logoBox').addEventListener('click', () => {
+            tapCount++;
+            clearTimeout(tapTimer);
+            tapTimer = setTimeout(() => { tapCount = 0; }, 500);
+            if (tapCount === 3) {
+                tapCount = 0;
+                toggleHud(true);
+            }
+        });
+
+        // Сохранение токена
+        document.getElementById('hudToken').addEventListener('change', (e) => {
+            localStorage.setItem('gh_token', e.target.value.trim());
+        });
+
+        // Загрузка иконки через GitHub API
+        document.getElementById('hudFileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const token = localStorage.getItem('gh_token');
+            const statusEl = document.getElementById('hudStatus');
+            statusEl.style.display = 'block';
+
+            if (!token) {
+                statusEl.style.color = '#ff453a';
+                statusEl.innerText = '[ERROR] Сначала введи GitHub токен в поле выше!';
+                return;
+            }
+
+            const bundleId = document.getElementById('hudAppSelect').value;
+            const targetApp = appsData.find(a => a.bundleId === bundleId);
+
+            statusEl.style.color = '#ff9f0a';
+            statusEl.innerText = `[INFO] Коммит иконки для ${bundleId}...`;
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64Content = reader.result.split(',')[1];
+                const filePath = `icons/${bundleId}.png`;
+
+                try {
+                    // Узнаем SHA существующей иконки, если есть
+                    let sha = null;
+                    const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`, {
+                        headers: { 'Authorization': `token ${token}` }
+                    });
+                    if (getRes.ok) {
+                        const fileInfo = await getRes.json();
+                        sha = fileInfo.sha;
+                    }
+
+                    // Коммитим новый файл в репозиторий
+                    const putRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: `Update icon for ${bundleId} via Dev HUD`,
+                            content: base64Content,
+                            sha: sha || undefined
+                        })
+                    });
+
+                    if (!putRes.ok) {
+                        throw new Error(`HTTP ${putRes.status}: Неверный токен или нет прав на репозиторий`);
+                    }
+
+                    // Обновляем витрину на лету
+                    const newUrl = `https://${REPO_OWNER.toLowerCase()}.github.io/{REPO_NAME}/${filePath}?t=${Date.now()}`;
+                    if (targetApp) targetApp.icon = newUrl;
+
+                    statusEl.style.color = '#30d158';
+                    statusEl.innerText = `[SUCCESS] Иконка для ${bundleId} успешно сохранена в GitHub!`;
+                    renderApps();
+                } catch (err) {
+                    statusEl.style.color = '#ff453a';
+                    statusEl.innerText = `[FAIL] ${err.message}`;
+                }
+            };
+        });
+
         document.getElementById('searchInput').addEventListener('input', renderApps);
 
         window.addEventListener('click', (e) => {
             const modal = document.getElementById('appModal');
             if (e.target === modal) closeModal();
+            const hud = document.getElementById('hudOverlay');
+            if (e.target === hud) toggleHud(false);
         });
 
         loadApps();
