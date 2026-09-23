@@ -4,6 +4,7 @@ import json
 import zipfile
 import plistlib
 import urllib.request
+import urllib.error
 import time
 from io import BytesIO
 from PIL import Image
@@ -23,8 +24,24 @@ def format_size(bytes_num):
         bytes_num /= 1024.0
     return f"{bytes_num:.1f} ГБ"
 
+def download_file_with_retry(url, dest_path, headers, max_retries=3):
+    """Скачивание с защитой от сбоев сервера (HTTP 500/502/503)"""
+    for attempt in range(1, max_retries + 1):
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=30) as resp, open(dest_path, "wb") as dst:
+                while True:
+                    chunk = resp.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    dst.write(chunk)
+            return True
+        except Exception as e:
+            print(f"Попытка {attempt}/{max_retries} не удалась ({e}). Ждем...")
+            time.sleep(3 * attempt)
+    return False
+
 def extract_icon_from_ipa(z, plist_path, dest_path):
-    # 1. Поиск iTunesArtwork
     for name in z.namelist():
         if name.lower() in ["itunesartwork", "itunesartwork.png", "itunesartwork@2x"]:
             try:
@@ -37,7 +54,6 @@ def extract_icon_from_ipa(z, plist_path, dest_path):
                     f.write(raw_data)
                 return True
 
-    # 2. Поиск AppIcon
     app_dir = os.path.dirname(plist_path)
     candidates = [
         n for n in z.namelist() 
@@ -82,7 +98,7 @@ def inspect_ipa(ipa_path, download_url):
         with z.open(plist_path) as f:
             try:
                 plist_data = plistlib.load(f)
-            except Exception as e:
+            except Exception:
                 return None
 
         bundle_id = plist_data.get("CFBundleIdentifier", "unknown.bundle")
@@ -93,7 +109,7 @@ def inspect_ipa(ipa_path, download_url):
         icon_dest = os.path.join("icons", icon_filename)
         custom_icon_path = os.path.join("custom-icons", icon_filename)
 
-        # ЖЕЛЕЗНЫЙ ПРИОРИТЕТ 1: Если ты загрузил вручную в custom-icons
+        # 1. Приоритет: ручная иконка из custom-icons
         if os.path.exists(custom_icon_path):
             print(f"-> [РУЧНАЯ ИКОНКА] Найдена в custom-icons/{icon_filename}!")
             with open(custom_icon_path, "rb") as src, open(icon_dest, "wb") as dst:
@@ -101,28 +117,14 @@ def inspect_ipa(ipa_path, download_url):
             timestamp = int(os.path.getmtime(custom_icon_path))
             icon_url = f"{BASE_URL}/icons/{icon_filename}?t={timestamp}"
         else:
-            # ПРИОРИТЕТ 2: Извлекаем из IPA
+            # 2. Извлечение из IPA
             has_local = extract_icon_from_ipa(z, plist_path, icon_dest)
             if has_local:
                 icon_url = f"{BASE_URL}/icons/{icon_filename}?v={version}"
             else:
-                # ПРИОРИТЕТ 3: Запасной официальный iTunes по bundleId
-                icon_url = ""
-                for country in ["ru", "us"]:
-                    try:
-                        u = f"https://itunes.apple.com/lookup?bundleId={bundle_id}&country={country}"
-                        r = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})
-                        with urllib.request.urlopen(r, timeout=3) as resp:
-                            d = json.loads(resp.read().decode())
-                            if d.get("resultCount", 0) > 0:
-                                icon_url = d["results"][0].get("artworkUrl512", "")
-                                break
-                    except Exception:
-                        pass
-                if not icon_url:
-                    icon_url = f"{BASE_URL}/icons/{icon_filename}"
+                icon_url = f"{BASE_URL}/icons/{icon_filename}"
 
-        # Генерация manifest.plist
+        # Manifest
         manifest_filename = f"{bundle_id}.plist"
         manifest_path = os.path.join("manifests", manifest_filename)
         manifest_content = f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -172,7 +174,10 @@ def inspect_ipa(ipa_path, download_url):
 def main():
     token = os.environ.get("GITHUB_TOKEN")
     repo = os.environ.get("GITHUB_REPOSITORY", f"{REPO_OWNER}/{REPO_NAME}")
-    headers = {"User-Agent": "Python-IPA-Builder"}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+        "Accept": "application/octet-stream"
+    }
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
@@ -192,9 +197,11 @@ def main():
                 download_url = asset["browser_download_url"]
                 local_path = f"/tmp/{ipa_name}"
 
-                d_req = urllib.request.Request(download_url, headers=headers)
-                with urllib.request.urlopen(d_req) as src, open(local_path, "wb") as dst:
-                    dst.write(src.read())
+                print(f"Скачивание {ipa_name}...")
+                success = download_file_with_retry(download_url, local_path, headers)
+                if not success:
+                    print(f"Пропуск {ipa_name} из-за ошибки сети.")
+                    continue
 
                 info = inspect_ipa(local_path, download_url)
                 if info:
@@ -206,7 +213,7 @@ def main():
     with open("apps.json", "w", encoding="utf-8") as f:
         json.dump(apps_data, f, ensure_ascii=False, indent=2)
 
-    print(f"\nВсе готово! Обработано {len(apps_data)} приложений.")
+    print(f"\nГотово! Успешно обработано {len(apps_data)} приложений.")
 
 if __name__ == "__main__":
     main()
