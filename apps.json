@@ -4,8 +4,8 @@
     "version": "1.59.4",
     "bundleId": "ru.kari-app.ios",
     "size": "116.9 МБ",
-    "category": "Утилиты",
-    "icon": "https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png",
+    "category": "Покупки",
+    "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/26/41/05/2641059b-8a97-1030-0520-c8c257ed646e/default-0-0-1x_U007ephone-0-1-0-85-220.png/512x512bb.jpg",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.kari-app.ios.plist",
     "description": "Приложение Kari выгружено из личного App Store."
   }
