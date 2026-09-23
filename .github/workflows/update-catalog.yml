@@ -3,14 +3,14 @@ name: Auto Update IPA Catalog
 on:
   release:
     types: [published, created, edited]
-  workflow_dispatch: # Позволяет запускать вручную кнопкой Run workflow
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,7 +21,8 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pillow
+        run: |
+          pip install pillow requests
 
       - name: Parse IPAs and generate manifests
         env:
@@ -33,4 +34,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add apps.json manifests/ icons/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update apps catalog from releases [skip ci]" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update apps catalog [skip ci]" && git push)
