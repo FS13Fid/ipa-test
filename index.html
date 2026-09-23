@@ -12,7 +12,7 @@
             --bg-base: #07090e;
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.65);
-            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(255, 255, 255, 0.06);
             --card-border: rgba(255, 255, 255, 0.12);
             --card-specular: rgba(255, 255, 255, 0.25);
             --accent-glow: #0a84ff;
@@ -28,7 +28,7 @@
             --bg-base: #e9ecf2;
             --text-primary: #1c1c1e;
             --text-secondary: rgba(0, 0, 0, 0.55);
-            --card-bg: rgba(255, 255, 255, 0.55);
+            --card-bg: rgba(255, 255, 255, 0.6);
             --card-border: rgba(255, 255, 255, 0.7);
             --card-specular: rgba(255, 255, 255, 0.9);
             --accent-glow: #007aff;
@@ -155,8 +155,7 @@
             cursor: pointer;
             color: var(--text-primary);
             font-size: 18px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, background-color 0.2s;
+            transition: transform 0.2s;
         }
 
         .theme-toggle-btn:active {
@@ -277,14 +276,30 @@
             gap: 14px;
         }
 
-        .app-icon {
+        .app-icon-wrapper {
             width: 60px;
             height: 60px;
             border-radius: 15px;
-            object-fit: cover;
+            background: linear-gradient(135deg, #007aff, #af52de);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-            background: #1c1c1e;
             flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .app-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .app-info {
@@ -346,43 +361,43 @@
             transform: scale(0.97);
         }
 
+        /* MODAL */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            z-index: 100;
-            display: flex;
+            z-index: 1000;
+            display: none;
             align-items: center;
             justify-content: center;
             padding: 20px;
             opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
         }
 
         .modal-overlay.active {
+            display: flex;
             opacity: 1;
-            pointer-events: auto;
         }
 
         .modal-sheet {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-top: 1px solid var(--card-specular);
-            backdrop-filter: blur(36px) saturate(190%);
-            -webkit-backdrop-filter: blur(36px) saturate(190%);
+            background: rgba(28, 28, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(36px);
+            -webkit-backdrop-filter: blur(36px);
             border-radius: 26px;
             width: 100%;
-            max-width: 400px;
-            padding: 26px;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-            transform: scale(0.92);
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            max-width: 380px;
+            padding: 24px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+            transform: scale(0.9);
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
             position: relative;
         }
 
@@ -394,41 +409,47 @@
             position: absolute;
             top: 16px;
             right: 16px;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
             border: none;
-            color: var(--text-primary);
+            color: #fff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 14px;
         }
 
         .modal-header {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 16px;
             margin-bottom: 20px;
         }
 
-        .modal-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 18px;
-            object-fit: cover;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            background: #1c1c1e;
+        .modal-icon-wrapper {
+            width: 68px;
+            height: 68px;
+            border-radius: 17px;
+            background: linear-gradient(135deg, #007aff, #af52de);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
         }
 
         .modal-desc {
             font-size: 13.5px;
             color: var(--text-secondary);
             line-height: 1.5;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
         .modal-specs {
@@ -447,13 +468,13 @@
             text-transform: uppercase;
             color: var(--text-secondary);
             font-weight: 700;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .spec-item .val {
             font-size: 13px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: #fff;
         }
 
         .modal-install-btn {
@@ -467,10 +488,6 @@
             display: block;
             text-align: center;
             box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35);
-        }
-
-        .modal-install-btn:active {
-            transform: scale(0.97);
         }
     </style>
 </head>
@@ -512,13 +529,17 @@
         </div>
     </div>
 
+    <!-- Модальное окно деталей -->
     <div class="modal-overlay" id="appModal">
         <div class="modal-sheet">
             <button class="modal-close" onclick="closeModal()">✕</button>
             <div class="modal-header">
-                <img id="modalIcon" class="modal-icon" src="" alt="">
+                <div class="modal-icon-wrapper" id="modalIconBox">
+                    <span id="modalIconLetter">K</span>
+                    <img id="modalIconImg" class="app-icon-img" src="" alt="" style="display:none;" onerror="this.style.display='none'">
+                </div>
                 <div class="app-info">
-                    <h2 id="modalTitle" class="app-title" style="font-size: 18px;"></h2>
+                    <h2 id="modalTitle" class="app-title" style="font-size: 18px; color: #fff;"></h2>
                     <span id="modalBundle" class="app-meta"></span>
                 </div>
             </div>
@@ -550,7 +571,6 @@
         let appsData = [];
         let currentFilter = 'all';
 
-        // Переключение темы оформления
         const themeBtn = document.getElementById('themeBtn');
         let isDark = true;
         themeBtn.addEventListener('click', () => {
@@ -559,7 +579,6 @@
             themeBtn.innerText = isDark ? '🌓' : '☀️';
         });
 
-        // Загрузка приложений из apps.json
         async function loadApps() {
             try {
                 const res = await fetch('apps.json?t=' + Date.now());
@@ -568,22 +587,13 @@
                 renderApps();
             } catch (e) {
                 console.warn(e);
-                // Запасной fallback (твое первое приложение Kari)
-                appsData = [{
-                    name: "Kari",
-                    version: "1.59.4",
-                    bundleId: "ru.kari-app.ios",
-                    size: "78 МБ",
-                    category: "Покупки",
-                    icon: "https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png",
-                    manifestUrl: "https://fs13fid.github.io/ipa-test/manifest.plist",
-                    description: "Оригинальное приложение Kari, выгруженное из личной медиатеки."
-                }];
-                renderApps();
+                document.getElementById('appsGrid').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 50px;">
+                        Каталог обновляется...
+                    </div>`;
             }
         }
 
-        // Отрисовка карточек
         function renderApps() {
             const grid = document.getElementById('appsGrid');
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -610,10 +620,14 @@
                 card.onclick = () => openModal(app);
 
                 const itmsLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.manifestUrl)}`;
+                const firstLetter = (app.name || 'A').charAt(0).toUpperCase();
 
                 card.innerHTML = `
                     <div class="app-header">
-                        <img class="app-icon" src="${app.icon}" alt="${app.name}" onerror="this.src='https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png'">
+                        <div class="app-icon-wrapper">
+                            <span>${firstLetter}</span>
+                            <img class="app-icon-img" src="${app.icon}" alt="${app.name}" onload="this.style.display='block'" onerror="this.style.display='none'">
+                        </div>
                         <div class="app-info">
                             <div class="app-title">${app.name}</div>
                             <div class="app-meta">${app.bundleId}</div>
@@ -629,9 +643,15 @@
             });
         }
 
-        // Модальное окно
         function openModal(app) {
-            document.getElementById('modalIcon').src = app.icon;
+            const firstLetter = (app.name || 'A').charAt(0).toUpperCase();
+            document.getElementById('modalIconLetter').innerText = firstLetter;
+            
+            const modalImg = document.getElementById('modalIconImg');
+            modalImg.src = app.icon;
+            modalImg.onload = () => modalImg.style.display = 'block';
+            modalImg.onerror = () => modalImg.style.display = 'none';
+
             document.getElementById('modalTitle').innerText = app.name;
             document.getElementById('modalBundle').innerText = app.bundleId;
             document.getElementById('modalVersion').innerText = 'v' + app.version;
@@ -652,7 +672,6 @@
             document.body.style.overflow = '';
         }
 
-        // Слушатели поиска и фильтра
         document.getElementById('searchInput').addEventListener('input', renderApps);
 
         document.querySelectorAll('.filter-chip').forEach(chip => {
