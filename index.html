@@ -537,12 +537,12 @@
         /* Экран блокировки Touch ID */
         .hud-lock-screen {
             text-align: center;
-            padding: 20px 10px;
+            padding: 10px 10px 15px;
         }
 
         .touch-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 46px;
+            margin-bottom: 14px;
             display: inline-block;
             filter: drop-shadow(0 0 12px rgba(10, 132, 255, 0.5));
         }
@@ -565,6 +565,23 @@
 
         .hud-lock-btn:active {
             transform: scale(0.96);
+        }
+
+        .hud-reset-link {
+            display: inline-block;
+            margin-top: 18px;
+            background: none;
+            border: none;
+            color: rgba(255, 69, 58, 0.85);
+            font-family: inherit;
+            font-size: 11px;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .hud-reset-link:hover {
+            opacity: 0.7;
         }
 
         .hud-group {
@@ -624,6 +641,13 @@
             background: rgba(255, 255, 255, 0.05);
             display: none;
             word-break: break-all;
+        }
+
+        .hud-footer-reset {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            text-align: center;
         }
     </style>
 </head>
@@ -696,7 +720,7 @@
         </div>
     </div>
 
-    <!-- СКРЫТНАЯ СИСТЕМНАЯ ПАНЕЛЬ С ЗАЩИТОЙ TOUCH ID -->
+    <!-- СКРЫТНАЯ СИСТЕМНАЯ ПАНЕЛЬ С ЗАЩИТОЙ TOUCH ID И СБРОСОМ -->
     <div class="hud-overlay" id="hudOverlay">
         <div class="hud-panel">
             <div class="hud-header">
@@ -704,14 +728,19 @@
                 <button class="hud-close" onclick="toggleHud(false)">✕</button>
             </div>
 
-            <!-- 1. Экран разблокировки по биометрии (если уже привязан) -->
+            <!-- 1. Экран блокировки Touch ID -->
             <div id="hudLockedState" class="hud-lock-screen" style="display: none;">
                 <div class="touch-icon">🪪</div>
                 <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 18px;">
-                    Требуется подтверждение Touch ID / Пароля
+                    Требуется подтверждение Touch ID
                 </p>
-                <button class="hud-lock-btn" onclick="authenticateUser()">
-                    <span>Войти через Touch ID</span>
+                <div>
+                    <button class="hud-lock-btn" onclick="authenticateUser()">
+                        <span>Войти через Touch ID</span>
+                    </button>
+                </div>
+                <button class="hud-reset-link" onclick="resetBiometrics()">
+                    Сбросить Touch ID / Сменить токен
                 </button>
             </div>
 
@@ -743,6 +772,12 @@
                 </div>
 
                 <div id="hudStatus" class="hud-status"></div>
+
+                <div class="hud-footer-reset">
+                    <button class="hud-reset-link" onclick="resetBiometrics()">
+                        ⚠️ Отвязать Touch ID и сбросить токен
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -856,7 +891,7 @@
             document.body.style.overflow = '';
         }
 
-        /* --- БИОМЕТРИЯ (TOUCH ID / WEBAUTHN) --- */
+        /* --- БИОМЕТРИЯ (TOUCH ID / WEBAUTHN) И СБРОС --- */
         async function enrollBiometrics() {
             const token = document.getElementById('hudToken').value.trim();
             if (!token.startsWith('ghp_')) {
@@ -884,20 +919,18 @@
                         }
                     });
                 }
-                // Сохраняем токен и флаг Touch ID
                 localStorage.setItem('gh_token_vault', btoa(token));
                 localStorage.setItem('has_touch_id', 'true');
                 isAuthenticated = true;
                 document.getElementById('tokenGroup').style.display = 'none';
-                alert('Touch ID успешно привязан! Токен надежно сохранен.');
+                alert('✓ Touch ID успешно привязан! Токен надёжно сохранён.');
             } catch (err) {
                 console.warn(err);
-                // Запасной вариант, если на устройстве нет Touch ID
                 localStorage.setItem('gh_token_vault', btoa(token));
                 localStorage.setItem('has_touch_id', 'false');
                 isAuthenticated = true;
                 document.getElementById('tokenGroup').style.display = 'none';
-                alert('Токен сохранен в памяти браузера.');
+                alert('Токен сохранен в локальной памяти браузера.');
             }
         }
 
@@ -924,6 +957,22 @@
                 } else if (pass) {
                     alert('Неверный ключ!');
                 }
+            }
+        }
+
+        function resetBiometrics() {
+            if (confirm('Сбросить привязку Touch ID и удалить сохранённый токен GitHub?')) {
+                localStorage.removeItem('gh_token_vault');
+                localStorage.removeItem('has_touch_id');
+                isAuthenticated = false;
+                document.getElementById('hudToken').value = '';
+                document.getElementById('hudLockedState').style.display = 'none';
+                document.getElementById('hudMainContent').style.display = 'block';
+                document.getElementById('tokenGroup').style.display = 'block';
+                const statusEl = document.getElementById('hudStatus');
+                statusEl.style.display = 'block';
+                statusEl.style.color = '#ff9f0a';
+                statusEl.innerText = '[INFO] Touch ID сброшен. Введи новый токен.';
             }
         }
 
