@@ -10,22 +10,20 @@
                 <dict>
                     <key>kind</key>
                     <string>software-package</string>
-                    <!-- https://github.com/FS13Fid/ipa-test/releases/download/v1.0/Kari.1.59.4.ipa -->
                     <key>url</key>
-                    <string>https://<твой-логин>.github.io/ipa-test/app.ipa</string>
+                    <string>https://github.com/FS13Fid/ipa-test/releases/download/v1.0/Kari.1.59.4.ipa</string>
                 </dict>
             </array>
             <key>metadata</key>
             <dict>
-                <!-- Bundle ID приложения (например, ru.sberbank.sberbankonline или com.apple.test) -->
                 <key>bundle-identifier</key>
                 <string>ru.kari-app.ios</string>
                 <key>bundle-version</key>
-                <string>1.0.0</string>
+                <string>1.59.4</string>
                 <key>kind</key>
                 <string>software</string>
                 <key>title</key>
-                <string>Тестовое Приложение</string>
+                <string>Kari</string>
             </dict>
         </dict>
     </array>
