@@ -23,7 +23,6 @@ def format_size(bytes_num):
     return f"{bytes_num:.1f} ГБ"
 
 def download_with_curl(url, dest_path, token=None):
-    """Надежное быстрое скачивание через curl с поддержкой редиректов и докачки"""
     cmd = ["curl", "-L", "-s", "--retry", "3", "--retry-delay", "2", "-o", dest_path]
     if token:
         cmd.extend(["-H", f"Authorization: token {token}"])
@@ -31,71 +30,51 @@ def download_with_curl(url, dest_path, token=None):
     res = subprocess.run(cmd)
     return res.returncode == 0 and os.path.exists(dest_path) and os.path.getsize(dest_path) > 1024
 
-def save_clean_png(raw_bytes, dest_path):
-    """Конвертирует изображение в стандартный веб PNG"""
-    try:
-        img = Image.open(BytesIO(raw_bytes))
-        img.load()
-        img.convert("RGBA").save(dest_path, "PNG")
-        return True
-    except Exception:
-        try:
-            with open(dest_path, "wb") as f:
-                f.write(raw_bytes)
-            return True
-        except Exception:
-            return False
+def fetch_apple_cdn_icon(bundle_id, item_id=None):
+    """Ищет оригинальную HD-иконку в CDN Apple"""
+    queries = []
+    if item_id:
+        queries.append(f"id={item_id}")
+    queries.append(f"bundleId={bundle_id}")
 
-def extract_native_icon(z, plist_data, plist_path, dest_path):
-    """Вытаскивает настоящую иконку приложения из IPA"""
-    # 1. Проверяем точный список иконок, заявленный в Info.plist
-    icon_names = []
-    icons_dict = plist_data.get("CFBundleIcons", {}).get("CFBundlePrimaryIcon", {})
-    if "CFBundleIconFiles" in icons_dict:
-        icon_names.extend(icons_dict["CFBundleIconFiles"])
-    if "CFBundleIconName" in icons_dict:
-        icon_names.append(icons_dict["CFBundleIconName"])
-    if "CFBundleIconFile" in plist_data:
-        icon_names.append(plist_data["CFBundleIconFile"])
-    if "CFBundleIconFiles" in plist_data:
-        icon_names.extend(plist_data["CFBundleIconFiles"])
+    for q in queries:
+        for country in ["ru", "us", "kz", "am"]:
+            try:
+                url = f"https://itunes.apple.com/lookup?{q}&country={country}"
+                r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=4)
+                if r.status_code == 200:
+                    data = r.json()
+                    if data.get("resultCount", 0) > 0:
+                        res = data["results"][0]
+                        icon_url = res.get("artworkUrl512") or res.get("artworkUrl100")
+                        if icon_url:
+                            # Заменяем размер на максимальный 512x512 или 1024x1024
+                            icon_url = re.sub(r'/\d+x\d+bb\.', '/512x512bb.', icon_url)
+                            return icon_url
+            except Exception:
+                continue
+    return ""
 
-    app_dir = os.path.dirname(plist_path)
-    
-    # Ищем файлы, соответствующие официальным именам иконок
-    for iname in reversed(icon_names):
-        clean_name = iname.replace(".png", "")
-        matches = [
-            n for n in z.namelist() 
-            if n.startswith(app_dir) and clean_name.lower() in n.lower() and n.endswith(".png")
-        ]
-        if matches:
-            matches.sort(key=lambda x: z.getinfo(x).file_size, reverse=True)
-            for m in matches:
-                try:
-                    if save_clean_png(z.read(m), dest_path):
-                        print(f"-> Извлечена иконка из манифеста: {m}")
-                        return True
-                except Exception:
-                    continue
-
-    # 2. Поиск iTunesArtwork (высокое разрешение из iMazing)
+def extract_fallback_icon(z, plist_path, dest_path):
+    """Если приложения нет в App Store (удалено), вытаскиваем графику из IPA"""
+    # 1. Поиск iTunesArtwork
     for name in z.namelist():
         if name.lower() in ["itunesartwork", "itunesartwork.png", "itunesartwork@2x"]:
             try:
-                if save_clean_png(z.read(name), dest_path):
-                    print(f"-> Извлечена iTunesArtwork: {name}")
-                    return True
+                data = z.read(name)
+                with open(dest_path, "wb") as f:
+                    f.write(data)
+                return True
             except Exception:
                 pass
 
-    # 3. Полный скан папки .app на любые квадратные иконки (AppIcon, 60x60, 120x120 и т.д.)
+    # 2. Поиск файлов иконок внутри .app
+    app_dir = os.path.dirname(plist_path)
     candidates = [
         n for n in z.namelist() 
-        if n.startswith(app_dir) and n.endswith(".png") and any(k in n.lower() for k in ["appicon", "icon", "60x60", "76x76", "1024"])
+        if n.startswith(app_dir) and n.endswith(".png") and any(k in n.lower() for k in ["appicon", "icon", "60x60", "76x76", "120x120"])
     ]
-    # Убираем ошметки
-    valid = [c for c in candidates if not any(b in c.lower() for b in ["20x20", "29x29", "notification", "small", "badge"])]
+    valid = [c for c in candidates if not any(b in c.lower() for b in ["20x20", "29x29", "notification", "small"])]
     if not valid:
         valid = candidates
 
@@ -103,17 +82,17 @@ def extract_native_icon(z, plist_data, plist_path, dest_path):
         valid.sort(key=lambda x: z.getinfo(x).file_size, reverse=True)
         for cand in valid[:4]:
             try:
-                if save_clean_png(z.read(cand), dest_path):
-                    print(f"-> Найдена иконка по скану: {cand}")
-                    return True
+                raw_bytes = z.read(cand)
+                # Пробуем сохранить и проверить размер
+                with open(dest_path, "wb") as f:
+                    f.write(raw_bytes)
+                return True
             except Exception:
                 continue
-
     return False
 
 def inspect_ipa(ipa_path, download_url):
-    print(f"\n======================================")
-    print(f"Обработка: {os.path.basename(ipa_path)}")
+    print(f"\nОбработка: {os.path.basename(ipa_path)}")
     size_str = format_size(os.path.getsize(ipa_path))
 
     with zipfile.ZipFile(ipa_path, 'r') as z:
@@ -124,15 +103,27 @@ def inspect_ipa(ipa_path, download_url):
                 break
 
         if not plist_path:
-            print("Info.plist не найден!")
             return None
 
         with z.open(plist_path) as f:
             try:
                 plist_data = plistlib.load(f)
-            except Exception as e:
-                print(f"Ошибка чтения Info.plist: {e}")
+            except Exception:
                 return None
+
+        # Ищем точный цифровой ID покупки Apple из iMazing
+        item_id = None
+        for meta_name in ["iTunesMetadata.plist", "Payload/iTunesMetadata.plist"]:
+            if meta_name in z.namelist():
+                try:
+                    with z.open(meta_name) as mf:
+                        m_data = plistlib.load(mf)
+                        item_id = m_data.get("itemId") or m_data.get("playlistId")
+                        if item_id:
+                            print(f"-> Найден официальный Store ID: {item_id}")
+                            break
+                except Exception:
+                    pass
 
         bundle_id = plist_data.get("CFBundleIdentifier", "unknown.bundle")
         version = plist_data.get("CFBundleShortVersionString", plist_data.get("CFBundleVersion", "1.0.0"))
@@ -141,16 +132,28 @@ def inspect_ipa(ipa_path, download_url):
         icon_filename = f"{bundle_id}.png"
         icon_dest = os.path.join("icons", icon_filename)
 
-        # Извлекаем родную иконку
-        has_icon = extract_native_icon(z, plist_data, plist_path, icon_dest)
-        
-        # Если есть иконка — ставим прямую ссылку с кэш-бастом по версии
-        if has_icon:
-            icon_url = f"{BASE_URL}/icons/{icon_filename}?v={version}"
-        else:
-            icon_url = f"{BASE_URL}/icons/{icon_filename}"
+        # 1. Проверяем CDN Apple
+        cdn_url = fetch_apple_cdn_icon(bundle_id, item_id)
+        icon_saved = False
 
-        # Создаем manifest.plist
+        if cdn_url:
+            try:
+                img_data = requests.get(cdn_url, timeout=6).content
+                if len(img_data) > 1000:
+                    with open(icon_dest, "wb") as f:
+                        f.write(img_data)
+                    icon_saved = True
+                    print(f"-> Иконка успешно скачана из CDN Apple!")
+            except Exception as e:
+                print(f"Не удалось скачать с CDN: {e}")
+
+        # 2. Если CDN не отдал — достаем из IPA
+        if not icon_saved:
+            icon_saved = extract_fallback_icon(z, plist_path, icon_dest)
+
+        icon_url = f"{BASE_URL}/icons/{icon_filename}?v={version}" if icon_saved else ""
+
+        # Manifest
         manifest_filename = f"{bundle_id}.plist"
         manifest_path = os.path.join("manifests", manifest_filename)
         manifest_content = f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -219,10 +222,8 @@ def main():
                 download_url = asset["browser_download_url"]
                 local_path = f"/tmp/{ipa_name}"
 
-                print(f"\nЗагрузка {ipa_name} через curl...")
                 ok = download_with_curl(download_url, local_path, token)
                 if not ok:
-                    print(f"Не удалось скачать {ipa_name}, пропуск.")
                     continue
 
                 try:
@@ -235,13 +236,10 @@ def main():
                 if os.path.exists(local_path):
                     os.remove(local_path)
 
-    # Сохраняем apps.json только если данные есть, чтобы никогда не затирать сайт
     if apps_data:
         with open("apps.json", "w", encoding="utf-8") as f:
             json.dump(apps_data, f, ensure_ascii=False, indent=2)
         print(f"\nУСПЕХ! Автоматически обновлено {len(apps_data)} приложений.")
-    else:
-        print("\nНовых приложений не найдено, текущий apps.json сохранен.")
 
 if __name__ == "__main__":
     main()
