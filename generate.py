@@ -4,7 +4,6 @@ import json
 import zipfile
 import plistlib
 import urllib.request
-from PIL import Image
 
 REPO_OWNER = os.environ.get("GITHUB_REPOSITORY_OWNER", "FS13Fid")
 REPO_NAME = os.environ.get("GITHUB_REPOSITORY", "FS13Fid/ipa-test").split("/")[-1]
@@ -20,6 +19,22 @@ def format_size(bytes_num):
         bytes_num /= 1024.0
     return f"{bytes_num:.1f} ГБ"
 
+def fetch_itunes_icon(bundle_id):
+    """Пытаемся достать официальную веб-иконку 512x512 из App Store"""
+    for country in ["ru", "us"]:
+        try:
+            url = f"https://itunes.apple.com/lookup?bundleId={bundle_id}&country={country}"
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                data = json.loads(resp.read().decode())
+                if data.get("resultCount", 0) > 0:
+                    item = data["results"][0]
+                    # Берем максимальное разрешение иконки
+                    return item.get("artworkUrl512", item.get("artworkUrl100", ""))
+        except Exception as e:
+            print(f"Ошибка iTunes API ({country}): {e}")
+    return ""
+
 def inspect_ipa(ipa_path, download_url):
     print(f"Парсинг {ipa_path}...")
     size_str = format_size(os.path.getsize(ipa_path))
@@ -32,47 +47,39 @@ def inspect_ipa(ipa_path, download_url):
                 break
         
         if not plist_path:
-            print("Info.plist не найден!")
             return None
             
         with z.open(plist_path) as f:
             try:
                 plist_data = plistlib.load(f)
             except Exception as e:
-                print(f"Ошибка чтения plist: {e}")
+                print(f"Ошибка plist: {e}")
                 return None
                 
         bundle_id = plist_data.get("CFBundleIdentifier", "unknown.bundle")
         version = plist_data.get("CFBundleShortVersionString", plist_data.get("CFBundleVersion", "1.0.0"))
         name = plist_data.get("CFBundleDisplayName", plist_data.get("CFBundleName", "App"))
         
-        # Поиск и извлечение иконки
-        icon_filename = f"{bundle_id}.png"
-        icon_dest = os.path.join("icons", icon_filename)
-        icon_extracted = False
+        # 1. Сначала пробуем достать чистую веб-иконку из App Store
+        icon_url = fetch_itunes_icon(bundle_id)
         
-        # Ищем иконки внутри Payload
-        app_dir = os.path.dirname(plist_path)
-        icon_candidates = [n for n in z.namelist() if n.startswith(app_dir) and "AppIcon" in n and n.endswith(".png")]
-        
-        if not icon_candidates:
-            icon_candidates = [n for n in z.namelist() if n.startswith(app_dir) and n.endswith(".png") and "icon" in n.lower()]
-            
-        if icon_candidates:
-            # Берем самую большую по весу (обычно самого высокого разрешения)
-            icon_candidates.sort(key=lambda x: z.getinfo(x).file_size, reverse=True)
-            chosen_icon = icon_candidates[0]
-            try:
-                with z.open(chosen_icon) as icon_src, open(icon_dest, "wb") as icon_out:
-                    icon_out.write(icon_src.read())
-                icon_extracted = True
-            except Exception as e:
-                print(f"Не удалось извлечь иконку: {e}")
+        # 2. Если не нашлось — сохраняем локальную из архива
+        if not icon_url:
+            icon_filename = f"{bundle_id}.png"
+            icon_dest = os.path.join("icons", icon_filename)
+            app_dir = os.path.dirname(plist_path)
+            candidates = [n for n in z.namelist() if n.startswith(app_dir) and n.endswith(".png") and "icon" in n.lower()]
+            if candidates:
+                candidates.sort(key=lambda x: z.getinfo(x).file_size, reverse=True)
+                with z.open(candidates[0]) as src, open(icon_dest, "wb") as dst:
+                    dst.write(src.read())
+                icon_url = f"{BASE_URL}/icons/{icon_filename}"
+            else:
+                icon_url = "https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png"
                 
         # Генерируем manifest.plist
         manifest_filename = f"{bundle_id}.plist"
         manifest_path = os.path.join("manifests", manifest_filename)
-        
         manifest_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -103,8 +110,7 @@ def inspect_ipa(ipa_path, download_url):
         </dict>
     </array>
 </dict>
-</plist>
-"""
+</plist>"""
         with open(manifest_path, "w", encoding="utf-8") as f:
             f.write(manifest_content)
             
@@ -113,8 +119,8 @@ def inspect_ipa(ipa_path, download_url):
             "version": version,
             "bundleId": bundle_id,
             "size": size_str,
-            "category": "Утилиты",
-            "icon": f"{BASE_URL}/icons/{icon_filename}" if icon_extracted else "https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png",
+            "category": "Покупки",
+            "icon": icon_url,
             "manifestUrl": f"{BASE_URL}/manifests/{manifest_filename}",
             "description": f"Приложение {name} выгружено из личного App Store."
         }
@@ -127,32 +133,28 @@ def main():
         headers["Authorization"] = f"Bearer {token}"
         
     req = urllib.request.Request(f"https://api.github.com/repos/{repo}/releases", headers=headers)
-    
     try:
         with urllib.request.urlopen(req) as resp:
             releases = json.loads(resp.read().decode())
     except Exception as e:
-        print(f"Ошибка запроса релизов: {e}")
+        print(f"Ошибка релизов: {e}")
         releases = []
         
     apps_data = []
-    
     for rel in releases:
         for asset in rel.get("assets", []):
             if asset.get("name", "").endswith(".ipa"):
                 ipa_name = asset["name"]
                 download_url = asset["browser_download_url"]
-                print(f"Загрузка {ipa_name} для анализа...")
                 local_path = f"/tmp/{ipa_name}"
                 
-                # Качаем файл
                 d_req = urllib.request.Request(download_url, headers=headers)
                 with urllib.request.urlopen(d_req) as src, open(local_path, "wb") as dst:
                     dst.write(src.read())
                     
-                app_info = inspect_ipa(local_path, download_url)
-                if app_info:
-                    apps_data.append(app_info)
+                info = inspect_ipa(local_path, download_url)
+                if info:
+                    apps_data.append(info)
                     
                 if os.path.exists(local_path):
                     os.remove(local_path)
@@ -160,7 +162,7 @@ def main():
     with open("apps.json", "w", encoding="utf-8") as f:
         json.dump(apps_data, f, ensure_ascii=False, indent=2)
         
-    print(f"Готово! Сгенерировано {len(apps_data)} приложений в apps.json.")
+    print(f"Обновлено {len(apps_data)} приложений.")
 
 if __name__ == "__main__":
     main()
