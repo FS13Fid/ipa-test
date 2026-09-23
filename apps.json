@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "name": "Kari",
+    "version": "1.59.4",
+    "bundleId": "ru.kari-app.ios",
+    "size": "116.9 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.kari-app.ios.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.kari-app.ios.plist",
+    "description": "Приложение Kari из личной медиатеки."
+  },
+  {
+    "name": "Почта Mail.ru",
+    "version": "15.92.0",
+    "bundleId": "ru.mail.mail",
+    "size": "548.0 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.mail.mail.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.mail.mail.plist",
+    "description": "Почта Mail.ru."
+  },
+  {
+    "name": "Пассажирам",
+    "version": "1.47.2",
+    "bundleId": "ru.rzd.passenger",
+    "size": "36.9 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.rzd.passenger.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.rzd.passenger.plist",
+    "description": "РЖД Пассажирам: билеты на поезд."
+  },
+  {
+    "name": "Online",
+    "version": "17.6.1",
+    "bundleId": "com.inv.gen",
+    "size": "507.4 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.inv.gen.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.inv.gen.plist",
+    "description": "Online."
+  },
+  {
+    "name": "DocStorage",
+    "version": "6.22",
+    "bundleId": "ru.tomlevierr.docstorage",
+    "size": "379.4 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.tomlevierr.docstorage.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.tomlevierr.docstorage.plist",
+    "description": "DocStorage."
+  },
+  {
+    "name": "Advance",
+    "version": "1.2",
+    "bundleId": "com.advancy.app",
+    "size": "232.8 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.advancy.app.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.advancy.app.plist",
+    "description": "Advance."
+  }
+]
