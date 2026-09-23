@@ -22,6 +22,7 @@
             --blob-1: rgba(10, 132, 255, 0.45);
             --blob-2: rgba(175, 82, 222, 0.4);
             --blob-3: rgba(48, 209, 88, 0.25);
+            --icon-bg: #1c1c1e;
         }
 
         [data-theme="light"] {
@@ -38,6 +39,7 @@
             --blob-1: rgba(0, 122, 255, 0.25);
             --blob-2: rgba(175, 82, 222, 0.2);
             --blob-3: rgba(52, 199, 89, 0.18);
+            --icon-bg: #e5e5ea;
         }
 
         * {
@@ -244,15 +246,16 @@
         .app-icon-wrapper {
             width: 60px;
             height: 60px;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #007aff, #af52de);
+            border-radius: 14px;
+            background: var(--icon-bg);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: 800;
-            color: white;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             flex-shrink: 0;
             overflow: hidden;
             position: relative;
@@ -262,6 +265,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 14px;
             position: absolute;
             top: 0;
             left: 0;
@@ -397,14 +401,15 @@
         .modal-icon-wrapper {
             width: 68px;
             height: 68px;
-            border-radius: 17px;
-            background: linear-gradient(135deg, #007aff, #af52de);
+            border-radius: 16px;
+            background: var(--icon-bg);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            font-weight: 800;
-            color: white;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-secondary);
             flex-shrink: 0;
             overflow: hidden;
             position: relative;
