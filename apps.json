@@ -4,7 +4,7 @@
     "version": "1.2",
     "bundleId": "com.advancy.app",
     "size": "232.8 МБ",
-    "icon": "https://fs13fid.github.io/ipa-test/icons/com.advancy.app.png?v=1.2",
+    "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/07/e4/f0/07e4f02c-37e1-f48b-f3ca-2c42857e5f60/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.advancy.app.plist",
     "description": "Приложение Advance выгружено из личного App Store."
   },
@@ -13,7 +13,7 @@
     "version": "6.22",
     "bundleId": "ru.tomlevierr.docstorage",
     "size": "379.4 МБ",
-    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.tomlevierr.docstorage.png?v=6.22",
+    "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/33/57/bd/3357bd47-f151-4d5f-e5c9-cb84fcbb2d07/AppIcon-1x_U007emarketing-0-7-0-85-220-0.png/512x512bb.jpg",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.tomlevierr.docstorage.plist",
     "description": "Приложение DocStorage выгружено из личного App Store."
   },
@@ -31,7 +31,7 @@
     "version": "15.92.0",
     "bundleId": "ru.mail.mail",
     "size": "548.0 МБ",
-    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.mail.mail.png?v=15.92.0",
+    "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/1c/23/5b/1c235b02-cc54-62a0-6519-37a5dc594042/gmail_2026_ios-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-0-85-220.png/512x512bb.jpg",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.mail.mail.plist",
     "description": "Приложение Почта Mail.ru выгружено из личного App Store."
   },
@@ -40,7 +40,7 @@
     "version": "17.6.1",
     "bundleId": "com.inv.gen",
     "size": "507.4 МБ",
-    "icon": "https://fs13fid.github.io/ipa-test/icons/com.inv.gen.png?v=17.6.1",
+    "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/bc/b9/0b/bcb90bcc-8292-1afd-14d9-8c56db345078/AppIcon-1x_U007emarketing-0-8-0-85-220-0.png/512x512bb.jpg",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.inv.gen.plist",
     "description": "Приложение Online выгружено из личного App Store."
   },
@@ -49,7 +49,7 @@
     "version": "1.47.2",
     "bundleId": "ru.rzd.passenger",
     "size": "36.9 МБ",
-    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.rzd.passenger.png?v=1.47.2",
+    "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/7c/d7/ff/7cd7fff4-72ea-dcd9-a8f6-b93a491ce052/AppIcon-0-0-1x_U007emarketing-0-10-0-0-85-220.png/512x512bb.jpg",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.rzd.passenger.plist",
     "description": "Приложение Пассажирам выгружено из личного App Store."
   }
