@@ -1,5 +1,25 @@
 [
   {
+    "name": "Advance",
+    "version": "1.2",
+    "bundleId": "com.advancy.app",
+    "size": "232.8 МБ",
+    "category": "Покупки",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.advancy.app.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.advancy.app.plist",
+    "description": "Приложение Advance выгружено из личного App Store."
+  },
+  {
+    "name": "DocStorage",
+    "version": "6.22",
+    "bundleId": "ru.tomlevierr.docstorage",
+    "size": "379.4 МБ",
+    "category": "Покупки",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.tomlevierr.docstorage.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.tomlevierr.docstorage.plist",
+    "description": "Приложение DocStorage выгружено из личного App Store."
+  },
+  {
     "name": "Kari",
     "version": "1.59.4",
     "bundleId": "ru.kari-app.ios",
@@ -8,5 +28,35 @@
     "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/26/41/05/2641059b-8a97-1030-0520-c8c257ed646e/default-0-0-1x_U007ephone-0-1-0-85-220.png/512x512bb.jpg",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.kari-app.ios.plist",
     "description": "Приложение Kari выгружено из личного App Store."
+  },
+  {
+    "name": "Почта Mail.ru",
+    "version": "15.92.0",
+    "bundleId": "ru.mail.mail",
+    "size": "548.0 МБ",
+    "category": "Покупки",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.mail.mail.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.mail.mail.plist",
+    "description": "Приложение Почта Mail.ru выгружено из личного App Store."
+  },
+  {
+    "name": "Online",
+    "version": "17.6.1",
+    "bundleId": "com.inv.gen",
+    "size": "507.4 МБ",
+    "category": "Покупки",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.inv.gen.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.inv.gen.plist",
+    "description": "Приложение Online выгружено из личного App Store."
+  },
+  {
+    "name": "Пассажирам",
+    "version": "1.47.2",
+    "bundleId": "ru.rzd.passenger",
+    "size": "36.9 МБ",
+    "category": "Покупки",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.rzd.passenger.png",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.rzd.passenger.plist",
+    "description": "Приложение Пассажирам выгружено из личного App Store."
   }
 ]
