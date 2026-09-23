@@ -2,49 +2,674 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Установка Kari</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IPA Studio — Liquid Catalog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        :root {
+            --bg-base: #07090e;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --card-specular: rgba(255, 255, 255, 0.25);
+            --accent-glow: #0a84ff;
+            --btn-bg: rgba(255, 255, 255, 0.12);
+            --btn-text: #5ac8fa;
+            --input-bg: rgba(255, 255, 255, 0.06);
+            --blob-1: rgba(10, 132, 255, 0.45);
+            --blob-2: rgba(175, 82, 222, 0.4);
+            --blob-3: rgba(48, 209, 88, 0.25);
+        }
+
+        [data-theme="light"] {
+            --bg-base: #e9ecf2;
+            --text-primary: #1c1c1e;
+            --text-secondary: rgba(0, 0, 0, 0.55);
+            --card-bg: rgba(255, 255, 255, 0.55);
+            --card-border: rgba(255, 255, 255, 0.7);
+            --card-specular: rgba(255, 255, 255, 0.9);
+            --accent-glow: #007aff;
+            --btn-bg: rgba(0, 122, 255, 0.1);
+            --btn-text: #007aff;
+            --input-bg: rgba(255, 255, 255, 0.6);
+            --blob-1: rgba(0, 122, 255, 0.25);
+            --blob-2: rgba(175, 82, 222, 0.2);
+            --blob-3: rgba(52, 199, 89, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            background-color: #f2f2f7;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 18px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            width: 280px;
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
-        h2 { margin: 0 0 8px 0; color: #1c1c1e; }
-        p { color: #8e8e93; font-size: 14px; margin: 0 0 20px 0; }
-        .btn {
-            display: inline-block;
-            background-color: #007aff;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            text-decoration: none;
+
+        .ambient-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .liquid-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.85;
+            animation: float 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .orb-1 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, var(--blob-1) 0%, transparent 70%);
+            top: -100px;
+            left: -80px;
+        }
+
+        .orb-2 {
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, var(--blob-2) 0%, transparent 70%);
+            bottom: -120px;
+            right: -100px;
+            animation-duration: 24s;
+            animation-direction: alternate-reverse;
+        }
+
+        .orb-3 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, var(--blob-3) 0%, transparent 70%);
+            top: 40%;
+            left: 35%;
+            animation-duration: 18s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+            50% { transform: translate(60px, 80px) scale(1.1) rotate(45deg); }
+            100% { transform: translate(-40px, 40px) scale(0.95) rotate(-30deg); }
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 36px 20px 80px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .header-title-box h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            line-height: 1.15;
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title-box p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .theme-toggle-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 18px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .theme-toggle-btn:active {
+            transform: scale(0.92);
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-top: 1px solid var(--card-specular);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border-radius: 16px;
+            padding: 14px 18px 14px 44px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            outline: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-bar::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-bar:focus {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            fill: var(--text-secondary);
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 14px;
+            margin-bottom: 24px;
+            scrollbar-width: none;
+        }
+
+        .filters-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-top: 1px solid var(--card-specular);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
             font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: var(--text-primary);
+            color: var(--bg-base);
+            border-color: var(--text-primary);
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-top: 1px solid var(--card-specular);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border-radius: 22px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+        }
+
+        .app-card:active {
+            transform: scale(0.98);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .app-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            object-fit: cover;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            background: #1c1c1e;
+            flex-shrink: 0;
+        }
+
+        .app-info {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .app-title {
             font-size: 16px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-primary);
+        }
+
+        .app-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .app-tags {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+        }
+
+        .btn-install {
+            margin-top: auto;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            display: block;
+            letter-spacing: 0.4px;
+            transition: all 0.2s;
+        }
+
+        .btn-install:active {
+            filter: brightness(1.2);
+            transform: scale(0.97);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-sheet {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-top: 1px solid var(--card-specular);
+            backdrop-filter: blur(36px) saturate(190%);
+            -webkit-backdrop-filter: blur(36px) saturate(190%);
+            border-radius: 26px;
+            width: 100%;
+            max-width: 400px;
+            padding: 26px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+            transform: scale(0.92);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-sheet {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .modal-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            background: #1c1c1e;
+        }
+
+        .modal-desc {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .spec-item .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .spec-item .val {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-install-btn {
+            background: #007aff;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: 16px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35);
+        }
+
+        .modal-install-btn:active {
+            transform: scale(0.97);
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>Kari</h2>
-    <p>Версия 1.59.4</p>
-    <a class="btn" href="itms-services://?action=download-manifest&url=https://fs13fid.github.io/ipa-test/manifest.plist">
-        Установить на iPhone
-    </a>
-</div>
+    <div class="ambient-canvas">
+        <div class="liquid-orb orb-1"></div>
+        <div class="liquid-orb orb-2"></div>
+        <div class="liquid-orb orb-3"></div>
+    </div>
 
+    <div class="wrapper">
+        <header>
+            <div class="header-title-box">
+                <h1>IPA Studio</h1>
+                <p>Личный каталог приложений</p>
+            </div>
+            <button class="theme-toggle-btn" id="themeBtn" aria-label="Toggle Theme">🌓</button>
+        </header>
+
+        <div class="search-container">
+            <svg class="search-icon" viewBox="0 0 24 24">
+                <path d="M10 2a8 8 0 015.293 13.998l4.854 4.853a1 1 0 01-1.414 1.414l-4.853-4.854A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/>
+            </svg>
+            <input type="text" class="search-bar" id="searchInput" placeholder="Поиск по названию или bundle id...">
+        </div>
+
+        <div class="filters-row">
+            <div class="filter-chip active" data-cat="all">Все</div>
+            <div class="filter-chip" data-cat="Утилиты">Утилиты</div>
+            <div class="filter-chip" data-cat="Покупки">Покупки</div>
+            <div class="filter-chip" data-cat="Социальные">Социальные</div>
+        </div>
+
+        <div class="apps-grid" id="appsGrid">
+            <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">
+                Загрузка каталога...
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="appModal">
+        <div class="modal-sheet">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div class="modal-header">
+                <img id="modalIcon" class="modal-icon" src="" alt="">
+                <div class="app-info">
+                    <h2 id="modalTitle" class="app-title" style="font-size: 18px;"></h2>
+                    <span id="modalBundle" class="app-meta"></span>
+                </div>
+            </div>
+
+            <div class="modal-specs">
+                <div class="spec-item">
+                    <div class="label">Версия</div>
+                    <div id="modalVersion" class="val">-</div>
+                </div>
+                <div class="spec-item">
+                    <div class="label">Размер</div>
+                    <div id="modalSize" class="val">-</div>
+                </div>
+                <div class="spec-item">
+                    <div class="label">Тип</div>
+                    <div class="val">OTA</div>
+                </div>
+            </div>
+
+            <p id="modalDesc" class="modal-desc"></p>
+
+            <a id="modalInstallBtn" href="#" class="modal-install-btn">
+                Установить на iPhone
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let appsData = [];
+        let currentFilter = 'all';
+
+        // Переключение темы оформления
+        const themeBtn = document.getElementById('themeBtn');
+        let isDark = true;
+        themeBtn.addEventListener('click', () => {
+            isDark = !isDark;
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            themeBtn.innerText = isDark ? '🌓' : '☀️';
+        });
+
+        // Загрузка приложений из apps.json
+        async function loadApps() {
+            try {
+                const res = await fetch('apps.json?t=' + Date.now());
+                if (!res.ok) throw new Error('apps.json не найден');
+                appsData = await res.json();
+                renderApps();
+            } catch (e) {
+                console.warn(e);
+                // Запасной fallback (твое первое приложение Kari)
+                appsData = [{
+                    name: "Kari",
+                    version: "1.59.4",
+                    bundleId: "ru.kari-app.ios",
+                    size: "78 МБ",
+                    category: "Покупки",
+                    icon: "https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png",
+                    manifestUrl: "https://fs13fid.github.io/ipa-test/manifest.plist",
+                    description: "Оригинальное приложение Kari, выгруженное из личной медиатеки."
+                }];
+                renderApps();
+            }
+        }
+
+        // Отрисовка карточек
+        function renderApps() {
+            const grid = document.getElementById('appsGrid');
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            grid.innerHTML = '';
+
+            const filtered = appsData.filter(app => {
+                const matchesCategory = currentFilter === 'all' || (app.category && app.category.toLowerCase() === currentFilter.toLowerCase());
+                const matchesQuery = app.name.toLowerCase().includes(query) || 
+                                     app.bundleId.toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 50px;">
+                        Ничего не найдено
+                    </div>`;
+                return;
+            }
+
+            filtered.forEach(app => {
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                card.onclick = () => openModal(app);
+
+                const itmsLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.manifestUrl)}`;
+
+                card.innerHTML = `
+                    <div class="app-header">
+                        <img class="app-icon" src="${app.icon}" alt="${app.name}" onerror="this.src='https://img.icons8.com/ios-filled/100/3478F6/macbook-app.png'">
+                        <div class="app-info">
+                            <div class="app-title">${app.name}</div>
+                            <div class="app-meta">${app.bundleId}</div>
+                        </div>
+                    </div>
+                    <div class="app-tags">
+                        <span class="tag">v${app.version}</span>
+                        <span class="tag">${app.size || 'IPA'}</span>
+                    </div>
+                    <a class="btn-install" href="${itmsLink}" onclick="event.stopPropagation()">GET</a>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Модальное окно
+        function openModal(app) {
+            document.getElementById('modalIcon').src = app.icon;
+            document.getElementById('modalTitle').innerText = app.name;
+            document.getElementById('modalBundle').innerText = app.bundleId;
+            document.getElementById('modalVersion').innerText = 'v' + app.version;
+            document.getElementById('modalSize').innerText = app.size || 'IPA';
+            document.getElementById('modalDesc').innerText = app.description || 'Приложение готово к установке.';
+
+            const itmsLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.manifestUrl)}`;
+            document.getElementById('modalInstallBtn').href = itmsLink;
+
+            const modal = document.getElementById('appModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('appModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Слушатели поиска и фильтра
+        document.getElementById('searchInput').addEventListener('input', renderApps);
+
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.dataset.cat;
+                renderApps();
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('appModal');
+            if (e.target === modal) closeModal();
+        });
+
+        loadApps();
+    </script>
 </body>
 </html>
