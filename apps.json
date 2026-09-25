@@ -1,5 +1,14 @@
 [
   {
+    "name": "Купер",
+    "version": "10.0.36",
+    "bundleId": "ru.moiseev",
+    "size": "110.6 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.moiseev.png?v=10.0.36",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.moiseev.plist",
+    "description": "Приложение Купер выгружено из личной медиатеки."
+  },
+  {
     "name": "Advance",
     "version": "1.2",
     "bundleId": "com.advancy.app",
@@ -7,6 +16,15 @@
     "icon": "https://fs13fid.github.io/ipa-test/icons/com.advancy.app.png?v=1.2",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.advancy.app.plist",
     "description": "Приложение Advance выгружено из личной медиатеки."
+  },
+  {
+    "name": "Au",
+    "version": "224.0",
+    "bundleId": "org.reactjs.native.prod.AuReactNativeApp",
+    "size": "553.0 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/org.reactjs.native.prod.AuReactNativeApp.png?v=224.0",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/org.reactjs.native.prod.AuReactNativeApp.plist",
+    "description": "Приложение Au выгружено из личной медиатеки."
   },
   {
     "name": "DocStorage",
