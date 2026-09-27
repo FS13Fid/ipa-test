@@ -18,6 +18,15 @@
     "description": "Приложение Advance выгружено из личной медиатеки."
   },
   {
+    "name": "ATOY",
+    "version": "13.95",
+    "bundleId": "ru.atoy.selfcare",
+    "size": "90.3 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.atoy.selfcare.png?v=13.95",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.atoy.selfcare.plist",
+    "description": "Приложение ATOY выгружено из личной медиатеки."
+  },
+  {
     "name": "Au",
     "version": "224.0",
     "bundleId": "org.reactjs.native.prod.AuReactNativeApp",
