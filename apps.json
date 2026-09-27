@@ -9,6 +9,24 @@
     "description": "Приложение Купер выгружено из личной медиатеки."
   },
   {
+    "name": "Вкусно— и точка",
+    "version": "14.2.1",
+    "bundleId": "com.mcdonaldsru.mcd",
+    "size": "185.8 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.mcdonaldsru.mcd.png?v=14.2.1",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.mcdonaldsru.mcd.plist",
+    "description": "Приложение Вкусно— и точка выгружено из личной медиатеки."
+  },
+  {
+    "name": "Сириус",
+    "version": "2.0.1",
+    "bundleId": "com.sm.FlowTime",
+    "size": "379.4 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.sm.FlowTime.png?v=2.0.1",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.sm.FlowTime.plist",
+    "description": "Приложение Сириус выгружено из личной медиатеки."
+  },
+  {
     "name": "Advance",
     "version": "1.2",
     "bundleId": "com.advancy.app",
@@ -45,6 +63,24 @@
     "description": "Приложение DocStorage выгружено из личной медиатеки."
   },
   {
+    "name": "EatsRate",
+    "version": "1.3",
+    "bundleId": "com.paata.shihan",
+    "size": "216.1 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.paata.shihan.png?v=1.3",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.paata.shihan.plist",
+    "description": "Приложение EatsRate выгружено из личной медиатеки."
+  },
+  {
+    "name": "Happ",
+    "version": "5.9.0",
+    "bundleId": "su.ffg.happ",
+    "size": "290.7 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/su.ffg.happ.png?v=5.9.0",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/su.ffg.happ.plist",
+    "description": "Приложение Happ выгружено из личной медиатеки."
+  },
+  {
     "name": "Kari",
     "version": "1.59.4",
     "bundleId": "ru.kari-app.ios",
@@ -63,6 +99,15 @@
     "description": "Приложение Почта Mail.ru выгружено из личной медиатеки."
   },
   {
+    "name": "MAX",
+    "version": "26.17.3",
+    "bundleId": "ru.oneme.app",
+    "size": "86.7 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.oneme.app.png?v=26.17.3",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.oneme.app.plist",
+    "description": "Приложение MAX выгружено из личной медиатеки."
+  },
+  {
     "name": "Online",
     "version": "17.6.1",
     "bundleId": "com.inv.gen",
@@ -72,6 +117,24 @@
     "description": "Приложение Online выгружено из личной медиатеки."
   },
   {
+    "name": "Ozon Банк",
+    "version": "19.27.0",
+    "bundleId": "ru.ozon.fintech.finance",
+    "size": "144.7 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.ozon.fintech.finance.png?v=19.27.0",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.ozon.fintech.finance.plist",
+    "description": "Приложение Ozon Банк выгружено из личной медиатеки."
+  },
+  {
+    "name": "Rave",
+    "version": "8.1.2",
+    "bundleId": "sh.weme.wemesh",
+    "size": "220.6 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/sh.weme.wemesh.png?v=8.1.2",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/sh.weme.wemesh.plist",
+    "description": "Приложение Rave выгружено из личной медиатеки."
+  },
+  {
     "name": "Пассажирам",
     "version": "1.47.2",
     "bundleId": "ru.rzd.passenger",
@@ -79,5 +142,41 @@
     "icon": "https://fs13fid.github.io/ipa-test/icons/ru.rzd.passenger.png?v=1.47.2",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.rzd.passenger.plist",
     "description": "Приложение Пассажирам выгружено из личной медиатеки."
+  },
+  {
+    "name": "VK",
+    "version": "8.183.1",
+    "bundleId": "com.vk.vkclient",
+    "size": "417.0 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.vk.vkclient.png?v=8.183.1",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.vk.vkclient.plist",
+    "description": "Приложение VK выгружено из личной медиатеки."
+  },
+  {
+    "name": "VK Messenger",
+    "version": "1.307",
+    "bundleId": "com.vk.vkme",
+    "size": "371.5 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.vk.vkme.png?v=1.307",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.vk.vkme.plist",
+    "description": "Приложение VK Messenger выгружено из личной медиатеки."
+  },
+  {
+    "name": "VK Video",
+    "version": "8.183",
+    "bundleId": "com.vk.vkvideo.prod",
+    "size": "236.6 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.vk.vkvideo.prod.png?v=8.183",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.vk.vkvideo.prod.plist",
+    "description": "Приложение VK Video выгружено из личной медиатеки."
+  },
+  {
+    "name": "Яндекс Банк",
+    "version": "0.234.4",
+    "bundleId": "com.yandex.fintech.bank-app",
+    "size": "87.1 МБ",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.yandex.fintech.bank-app.png?v=0.234.4",
+    "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.yandex.fintech.bank-app.plist",
+    "description": "Приложение Яндекс Банк выгружено из личной медиатеки."
   }
 ]
