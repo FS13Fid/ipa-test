@@ -3,180 +3,200 @@
     "name": "Купер",
     "version": "10.0.36",
     "bundleId": "ru.moiseev",
+    "account": "sinakayev@icloud.com",
     "size": "110.6 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/ru.moiseev.png?v=10.0.36",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.moiseev.plist",
-    "description": "Приложение Купер выгружено из личной медиатеки."
+    "description": "Приложение Купер выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "Вкусно— и точка",
     "version": "14.2.1",
     "bundleId": "com.mcdonaldsru.mcd",
+    "account": "sinakayev@icloud.com",
     "size": "185.8 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/com.mcdonaldsru.mcd.png?v=14.2.1",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.mcdonaldsru.mcd.plist",
-    "description": "Приложение Вкусно— и точка выгружено из личной медиатеки."
+    "description": "Приложение Вкусно— и точка выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "Сириус",
     "version": "2.0.1",
     "bundleId": "com.sm.FlowTime",
+    "account": "f.sinakaev@ya.ru",
     "size": "379.4 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/com.sm.FlowTime.png?v=2.0.1",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.sm.FlowTime.plist",
-    "description": "Приложение Сириус выгружено из личной медиатеки."
+    "description": "Приложение Сириус выгружено из учетной записи f.sinakaev@ya.ru."
   },
   {
     "name": "Advance",
     "version": "1.2",
     "bundleId": "com.advancy.app",
+    "account": "sinakayev@icloud.com",
     "size": "232.8 МБ",
-    "icon": "https://fs13fid.github.io/ipa-test/icons/com.advancy.app.png?v=1.2",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.advancy.app.png?t=1790524418",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.advancy.app.plist",
-    "description": "Приложение Advance выгружено из личной медиатеки."
+    "description": "Приложение Advance выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "ATOY",
     "version": "13.95",
     "bundleId": "ru.atoy.selfcare",
+    "account": "sinakayev@icloud.com",
     "size": "90.3 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/ru.atoy.selfcare.png?v=13.95",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.atoy.selfcare.plist",
-    "description": "Приложение ATOY выгружено из личной медиатеки."
+    "description": "Приложение ATOY выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "Au",
     "version": "224.0",
     "bundleId": "org.reactjs.native.prod.AuReactNativeApp",
+    "account": "sinakayev@icloud.com",
     "size": "553.0 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/org.reactjs.native.prod.AuReactNativeApp.png?v=224.0",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/org.reactjs.native.prod.AuReactNativeApp.plist",
-    "description": "Приложение Au выгружено из личной медиатеки."
+    "description": "Приложение Au выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "DocStorage",
     "version": "6.22",
     "bundleId": "ru.tomlevierr.docstorage",
+    "account": "sinakayev@icloud.com",
     "size": "379.4 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/ru.tomlevierr.docstorage.png?v=6.22",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.tomlevierr.docstorage.plist",
-    "description": "Приложение DocStorage выгружено из личной медиатеки."
+    "description": "Приложение DocStorage выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "EatsRate",
     "version": "1.3",
     "bundleId": "com.paata.shihan",
+    "account": "sinakayev@icloud.com",
     "size": "216.1 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/com.paata.shihan.png?v=1.3",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.paata.shihan.plist",
-    "description": "Приложение EatsRate выгружено из личной медиатеки."
+    "description": "Приложение EatsRate выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "Happ",
     "version": "5.9.0",
     "bundleId": "su.ffg.happ",
+    "account": "f.sinakaev@ya.ru",
     "size": "290.7 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/su.ffg.happ.png?v=5.9.0",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/su.ffg.happ.plist",
-    "description": "Приложение Happ выгружено из личной медиатеки."
+    "description": "Приложение Happ выгружено из учетной записи f.sinakaev@ya.ru."
   },
   {
     "name": "Kari",
     "version": "1.59.4",
     "bundleId": "ru.kari-app.ios",
+    "account": "sinakayev@icloud.com",
     "size": "116.9 МБ",
-    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.kari-app.ios.png?v=1.59.4",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/ru.kari-app.ios.png?t=1790524418",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.kari-app.ios.plist",
-    "description": "Приложение Kari выгружено из личной медиатеки."
+    "description": "Приложение Kari выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "Почта Mail.ru",
     "version": "15.92.0",
     "bundleId": "ru.mail.mail",
+    "account": "sinakayev@icloud.com",
     "size": "548.0 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/ru.mail.mail.png?v=15.92.0",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.mail.mail.plist",
-    "description": "Приложение Почта Mail.ru выгружено из личной медиатеки."
+    "description": "Приложение Почта Mail.ru выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "MAX",
     "version": "26.17.3",
     "bundleId": "ru.oneme.app",
+    "account": "f.sinakaev@ya.ru",
     "size": "86.7 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/ru.oneme.app.png?v=26.17.3",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.oneme.app.plist",
-    "description": "Приложение MAX выгружено из личной медиатеки."
+    "description": "Приложение MAX выгружено из учетной записи f.sinakaev@ya.ru."
   },
   {
     "name": "Online",
     "version": "17.6.1",
     "bundleId": "com.inv.gen",
+    "account": "sinakayev@icloud.com",
     "size": "507.4 МБ",
-    "icon": "https://fs13fid.github.io/ipa-test/icons/com.inv.gen.png?v=17.6.1",
+    "icon": "https://fs13fid.github.io/ipa-test/icons/com.inv.gen.png?t=1790524418",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.inv.gen.plist",
-    "description": "Приложение Online выгружено из личной медиатеки."
+    "description": "Приложение Online выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "Ozon Банк",
     "version": "19.27.0",
     "bundleId": "ru.ozon.fintech.finance",
+    "account": "f.sinakaev@ya.ru",
     "size": "144.7 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/ru.ozon.fintech.finance.png?v=19.27.0",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.ozon.fintech.finance.plist",
-    "description": "Приложение Ozon Банк выгружено из личной медиатеки."
+    "description": "Приложение Ozon Банк выгружено из учетной записи f.sinakaev@ya.ru."
   },
   {
     "name": "Rave",
     "version": "8.1.2",
     "bundleId": "sh.weme.wemesh",
+    "account": "f.sinakaev@ya.ru",
     "size": "220.6 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/sh.weme.wemesh.png?v=8.1.2",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/sh.weme.wemesh.plist",
-    "description": "Приложение Rave выгружено из личной медиатеки."
+    "description": "Приложение Rave выгружено из учетной записи f.sinakaev@ya.ru."
   },
   {
     "name": "Пассажирам",
     "version": "1.47.2",
     "bundleId": "ru.rzd.passenger",
+    "account": "sinakayev@icloud.com",
     "size": "36.9 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/ru.rzd.passenger.png?v=1.47.2",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/ru.rzd.passenger.plist",
-    "description": "Приложение Пассажирам выгружено из личной медиатеки."
+    "description": "Приложение Пассажирам выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "VK",
     "version": "8.183.1",
     "bundleId": "com.vk.vkclient",
+    "account": "sinakayev@icloud.com",
     "size": "417.0 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/com.vk.vkclient.png?v=8.183.1",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.vk.vkclient.plist",
-    "description": "Приложение VK выгружено из личной медиатеки."
+    "description": "Приложение VK выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "VK Messenger",
     "version": "1.307",
     "bundleId": "com.vk.vkme",
+    "account": "sinakayev@icloud.com",
     "size": "371.5 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/com.vk.vkme.png?v=1.307",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.vk.vkme.plist",
-    "description": "Приложение VK Messenger выгружено из личной медиатеки."
+    "description": "Приложение VK Messenger выгружено из учетной записи sinakayev@icloud.com."
   },
   {
     "name": "VK Video",
     "version": "8.183",
     "bundleId": "com.vk.vkvideo.prod",
+    "account": "f.sinakaev@ya.ru",
     "size": "236.6 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/com.vk.vkvideo.prod.png?v=8.183",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.vk.vkvideo.prod.plist",
-    "description": "Приложение VK Video выгружено из личной медиатеки."
+    "description": "Приложение VK Video выгружено из учетной записи f.sinakaev@ya.ru."
   },
   {
     "name": "Яндекс Банк",
     "version": "0.234.4",
     "bundleId": "com.yandex.fintech.bank-app",
+    "account": "f.sinakaev@ya.ru",
     "size": "87.1 МБ",
     "icon": "https://fs13fid.github.io/ipa-test/icons/com.yandex.fintech.bank-app.png?v=0.234.4",
     "manifestUrl": "https://fs13fid.github.io/ipa-test/manifests/com.yandex.fintech.bank-app.plist",
-    "description": "Приложение Яндекс Банк выгружено из личной медиатеки."
+    "description": "Приложение Яндекс Банк выгружено из учетной записи f.sinakaev@ya.ru."
   }
 ]
