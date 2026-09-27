@@ -114,7 +114,7 @@
         .wrapper {
             position: relative;
             z-index: 1;
-            max-width: 900px;
+            max-width: 920px;
             margin: 0 auto;
             padding: 36px 20px 80px;
         }
@@ -171,7 +171,7 @@
 
         .search-container {
             position: relative;
-            margin-bottom: 26px;
+            margin-bottom: 18px;
         }
 
         .search-bar {
@@ -211,9 +211,56 @@
             pointer-events: none;
         }
 
+        /* Фильтры аккаунтов */
+        .account-tabs-wrapper {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            scrollbar-width: none;
+        }
+
+        .account-tabs-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .account-tab {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .account-tab.active {
+            background: var(--text-primary);
+            color: var(--bg-base);
+            border-color: var(--text-primary);
+        }
+
+        .account-tab .count {
+            font-size: 10px;
+            opacity: 0.7;
+            background: rgba(0,0,0,0.15);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
         .apps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
             gap: 18px;
         }
 
@@ -227,7 +274,7 @@
             padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
             cursor: pointer;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
             transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s;
@@ -293,8 +340,27 @@
         }
 
         .app-meta {
-            font-size: 12px;
+            font-size: 11.5px;
             color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Бейдж аккаунта */
+        .account-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #5ac8fa;
+            background: rgba(90, 200, 250, 0.1);
+            border: 1px solid rgba(90, 200, 250, 0.2);
+            padding: 4px 8px;
+            border-radius: 8px;
+            width: fit-content;
+            max-width: 100%;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -335,7 +401,7 @@
             transform: scale(0.97);
         }
 
-        /* КАТАЛОГ: МОДАЛКА */
+        /* МОДАЛКА */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -400,7 +466,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .modal-icon-wrapper {
@@ -420,11 +486,35 @@
             position: relative;
         }
 
+        .modal-account-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-account-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .modal-account-val {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #5ac8fa;
+        }
+
         .modal-desc {
             font-size: 13.5px;
             color: var(--text-secondary);
             line-height: 1.5;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .modal-specs {
@@ -465,7 +555,7 @@
             box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35);
         }
 
-        /* СКРЫТНАЯ СИСТЕМНАЯ ПАНЕЛЬ С BIOMETRICS (DEV HUD) */
+        /* СКРЫТНАЯ ПАНЕЛЬ (DEV HUD) */
         .hud-overlay {
             position: fixed;
             top: 0;
@@ -534,7 +624,6 @@
             font-size: 16px;
         }
 
-        /* Экран блокировки Touch ID */
         .hud-lock-screen {
             text-align: center;
             padding: 10px 10px 15px;
@@ -560,11 +649,6 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .hud-lock-btn:active {
-            transform: scale(0.96);
         }
 
         .hud-reset-link {
@@ -577,11 +661,6 @@
             font-size: 11px;
             text-decoration: underline;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .hud-reset-link:hover {
-            opacity: 0.7;
         }
 
         .hud-group {
@@ -608,29 +687,13 @@
             outline: none;
         }
 
-        .hud-input:focus, .hud-select:focus {
-            border-color: #0a84ff;
-        }
-
         .hud-dropzone {
             border: 2px dashed rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 6px;
             background: rgba(255, 255, 255, 0.02);
-        }
-
-        .hud-dropzone:hover {
-            border-color: #0a84ff;
-            background: rgba(10, 132, 255, 0.05);
-        }
-
-        .hud-dropzone p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
         }
 
         .hud-status {
@@ -641,13 +704,6 @@
             background: rgba(255, 255, 255, 0.05);
             display: none;
             word-break: break-all;
-        }
-
-        .hud-footer-reset {
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px dashed rgba(255, 255, 255, 0.1);
-            text-align: center;
         }
     </style>
 </head>
@@ -675,6 +731,13 @@
             <input type="text" class="search-bar" id="searchInput" placeholder="Поиск по названию или bundle id...">
         </div>
 
+        <!-- Вкладки фильтрации по Apple ID -->
+        <div class="account-tabs-wrapper" id="accountTabs">
+            <div class="account-tab active" data-acc="all">
+                Все аккаунты <span class="count" id="countAll">0</span>
+            </div>
+        </div>
+
         <div class="apps-grid" id="appsGrid">
             <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">
                 Загрузка каталога...
@@ -695,6 +758,12 @@
                     <h2 id="modalTitle" class="app-title" style="font-size: 18px; color: #fff;"></h2>
                     <span id="modalBundle" class="app-meta"></span>
                 </div>
+            </div>
+
+            <!-- Строка учетной записи Apple ID -->
+            <div class="modal-account-box">
+                <span class="modal-account-label">Apple ID</span>
+                <span id="modalAccount" class="modal-account-val"></span>
             </div>
 
             <div class="modal-specs">
@@ -720,7 +789,7 @@
         </div>
     </div>
 
-    <!-- СКРЫТНАЯ СИСТЕМНАЯ ПАНЕЛЬ С ЗАЩИТОЙ TOUCH ID И СБРОСОМ -->
+    <!-- DEV HUD -->
     <div class="hud-overlay" id="hudOverlay">
         <div class="hud-panel">
             <div class="hud-header">
@@ -728,7 +797,6 @@
                 <button class="hud-close" onclick="toggleHud(false)">✕</button>
             </div>
 
-            <!-- 1. Экран блокировки Touch ID -->
             <div id="hudLockedState" class="hud-lock-screen" style="display: none;">
                 <div class="touch-icon">🪪</div>
                 <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 18px;">
@@ -744,27 +812,24 @@
                 </button>
             </div>
 
-            <!-- 2. Основная рабочая панель -->
             <div id="hudMainContent" style="display: none;">
                 <div class="hud-group" id="tokenGroup">
-                    <label class="hud-label">GitHub Access Token (первая настройка)</label>
+                    <label class="hud-label">GitHub Access Token</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="password" id="hudToken" class="hud-input" placeholder="ghp_xxxxxxxxxxxxxxx">
                         <button class="hud-lock-btn" id="saveBiometricBtn" style="padding: 0 14px; font-size: 11px; white-space: nowrap;" onclick="enrollBiometrics()">
-                            Запомнить с Touch ID
+                            Touch ID
                         </button>
                     </div>
                 </div>
 
                 <div class="hud-group">
                     <label class="hud-label">Целевое приложение</label>
-                    <select id="hudAppSelect" class="hud-select">
-                        <!-- Динамически -->
-                    </select>
+                    <select id="hudAppSelect" class="hud-select"></select>
                 </div>
 
                 <div class="hud-group">
-                    <label class="hud-label">Загрузка иконки (PNG / JPG)</label>
+                    <label class="hud-label">Загрузка иконки</label>
                     <div class="hud-dropzone" onclick="document.getElementById('hudFileInput').click()">
                         <p id="hudDropText">Нажми для выбора файла иконки</p>
                     </div>
@@ -773,7 +838,7 @@
 
                 <div id="hudStatus" class="hud-status"></div>
 
-                <div class="hud-footer-reset">
+                <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed rgba(255, 255, 255, 0.1); text-align: center;">
                     <button class="hud-reset-link" onclick="resetBiometrics()">
                         ⚠️ Отвязать Touch ID и сбросить токен
                     </button>
@@ -787,9 +852,9 @@
         const REPO_NAME = "ipa-test";
 
         let appsData = [];
+        let currentAccountFilter = 'all';
         let isAuthenticated = false;
 
-        // Переключение темы
         const themeBtn = document.getElementById('themeBtn');
         let isDark = true;
         themeBtn.addEventListener('click', () => {
@@ -798,12 +863,12 @@
             themeBtn.innerText = isDark ? '🌓' : '☀️';
         });
 
-        // Загрузка каталога
         async function loadApps() {
             try {
                 const res = await fetch('apps.json?t=' + Date.now());
                 if (!res.ok) throw new Error('apps.json не найден');
                 appsData = await res.json();
+                buildAccountTabs();
                 renderApps();
                 populateHudSelect();
             } catch (e) {
@@ -815,14 +880,54 @@
             }
         }
 
+        // Построение вкладок для фильтра по аккаунтам
+        function buildAccountTabs() {
+            const tabsContainer = document.getElementById('accountTabs');
+            const accounts = {};
+
+            appsData.forEach(app => {
+                const acc = app.account || 'Без аккаунта';
+                accounts[acc] = (accounts[acc] || 0) + 1;
+            });
+
+            document.getElementById('countAll').innerText = appsData.length;
+
+            // Генерируем кнопки для каждого найденного Apple ID
+            Object.keys(accounts).forEach(acc => {
+                const tab = document.createElement('div');
+                tab.className = 'account-tab';
+                tab.dataset.acc = acc;
+                // Красиво сокращаем длинный email, если нужно
+                const displayAcc = acc.length > 20 ? acc.substring(0, 18) + '...' : acc;
+                tab.innerHTML = ` ${displayAcc} <span class="count">${accounts[acc]}</span>`;
+                tab.onclick = () => {
+                    document.querySelectorAll('.account-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentAccountFilter = acc;
+                    renderApps();
+                };
+                tabsContainer.appendChild(tab);
+            });
+
+            document.querySelector('.account-tab[data-acc="all"]').onclick = function() {
+                document.querySelectorAll('.account-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentAccountFilter = 'all';
+                renderApps();
+            };
+        }
+
         function renderApps() {
             const grid = document.getElementById('appsGrid');
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             grid.innerHTML = '';
 
             const filtered = appsData.filter(app => {
-                return (app.name || '').toLowerCase().includes(query) || 
-                       (app.bundleId || '').toLowerCase().includes(query);
+                const matchesAccount = currentAccountFilter === 'all' || app.account === currentAccountFilter;
+                const matchesQuery = (app.name || '').toLowerCase().includes(query) || 
+                                     (app.bundleId || '').toLowerCase().includes(query) ||
+                                     (app.account || '').toLowerCase().includes(query);
+                return matchesAccount && matchesQuery;
             });
 
             if (filtered.length === 0) {
@@ -840,6 +945,7 @@
 
                 const itmsLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.manifestUrl)}`;
                 const firstLetter = (app.name || 'A').charAt(0).toUpperCase();
+                const accText = app.account || 'App Store';
 
                 card.innerHTML = `
                     <div class="app-header">
@@ -851,6 +957,9 @@
                             <div class="app-title">${app.name}</div>
                             <div class="app-meta">${app.bundleId}</div>
                         </div>
+                    </div>
+                    <div class="account-badge">
+                        <span></span> ${accText}
                     </div>
                     <div class="app-tags">
                         <span class="tag">v${app.version}</span>
@@ -873,6 +982,7 @@
 
             document.getElementById('modalTitle').innerText = app.name;
             document.getElementById('modalBundle').innerText = app.bundleId;
+            document.getElementById('modalAccount').innerText = app.account || 'Не указан';
             document.getElementById('modalVersion').innerText = 'v' + app.version;
             document.getElementById('modalSize').innerText = app.size || 'IPA';
             document.getElementById('modalDesc').innerText = app.description || 'Приложение готово к установке.';
@@ -891,28 +1001,22 @@
             document.body.style.overflow = '';
         }
 
-        /* --- БИОМЕТРИЯ (TOUCH ID / WEBAUTHN) И СБРОС --- */
+        /* WEBAUTHN / HUD */
         async function enrollBiometrics() {
             const token = document.getElementById('hudToken').value.trim();
             if (!token.startsWith('ghp_')) {
-                alert('Сначала вставь корректный токен GitHub (начинается на ghp_)!');
+                alert('Введи корректный токен ghp_!');
                 return;
             }
-
             try {
                 if (window.PublicKeyCredential) {
                     const challenge = new Uint8Array(32);
                     window.crypto.getRandomValues(challenge);
-
                     await navigator.credentials.create({
                         publicKey: {
                             challenge: challenge,
                             rp: { name: "IPA Studio Console" },
-                            user: {
-                                id: new Uint8Array([1, 2, 3, 4]),
-                                name: "admin",
-                                displayName: "Administrator"
-                            },
+                            user: { id: new Uint8Array([1, 2, 3, 4]), name: "admin", displayName: "Administrator" },
                             pubKeyCredParams: [{ alg: -7, type: "public-key" }],
                             authenticatorSelection: { userVerification: "required" },
                             timeout: 60000
@@ -923,14 +1027,12 @@
                 localStorage.setItem('has_touch_id', 'true');
                 isAuthenticated = true;
                 document.getElementById('tokenGroup').style.display = 'none';
-                alert('✓ Touch ID успешно привязан! Токен надёжно сохранён.');
+                alert('Touch ID привязан!');
             } catch (err) {
-                console.warn(err);
                 localStorage.setItem('gh_token_vault', btoa(token));
-                localStorage.setItem('has_touch_id', 'false');
                 isAuthenticated = true;
                 document.getElementById('tokenGroup').style.display = 'none';
-                alert('Токен сохранен в локальной памяти браузера.');
+                alert('Токен сохранен.');
             }
         }
 
@@ -939,19 +1041,13 @@
                 if (window.PublicKeyCredential) {
                     const challenge = new Uint8Array(32);
                     window.crypto.getRandomValues(challenge);
-
                     await navigator.credentials.get({
-                        publicKey: {
-                            challenge: challenge,
-                            userVerification: "required",
-                            timeout: 60000
-                        }
+                        publicKey: { challenge: challenge, userVerification: "required", timeout: 60000 }
                     });
                 }
                 unlockConsole();
             } catch (err) {
-                console.error("Auth error:", err);
-                const pass = prompt('Touch ID отклонён. Введи пароль/токен вручную для входа:');
+                const pass = prompt('Введи токен ghp_ вручную:');
                 if (pass && btoa(pass.trim()) === localStorage.getItem('gh_token_vault')) {
                     unlockConsole();
                 } else if (pass) {
@@ -961,7 +1057,7 @@
         }
 
         function resetBiometrics() {
-            if (confirm('Сбросить привязку Touch ID и удалить сохранённый токен GitHub?')) {
+            if (confirm('Сбросить привязку Touch ID и токен?')) {
                 localStorage.removeItem('gh_token_vault');
                 localStorage.removeItem('has_touch_id');
                 isAuthenticated = false;
@@ -969,10 +1065,6 @@
                 document.getElementById('hudLockedState').style.display = 'none';
                 document.getElementById('hudMainContent').style.display = 'block';
                 document.getElementById('tokenGroup').style.display = 'block';
-                const statusEl = document.getElementById('hudStatus');
-                statusEl.style.display = 'block';
-                statusEl.style.color = '#ff9f0a';
-                statusEl.innerText = '[INFO] Touch ID сброшен. Введи новый токен.';
             }
         }
 
@@ -1009,21 +1101,18 @@
             appsData.forEach(app => {
                 const opt = document.createElement('option');
                 opt.value = app.bundleId;
-                opt.textContent = `${app.name} (${app.bundleId})`;
+                opt.textContent = `${app.name} (${app.account || 'Unknown'})`;
                 select.appendChild(opt);
             });
         }
 
-        // Хоткей Cmd+Shift+D / Ctrl+Shift+D
         window.addEventListener('keydown', (e) => {
             if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.code === 'KeyD') {
                 e.preventDefault();
-                const hud = document.getElementById('hudOverlay');
-                toggleHud(!hud.classList.contains('active'));
+                toggleHud(!document.getElementById('hudOverlay').classList.contains('active'));
             }
         });
 
-        // Тройной клик по логотипу
         let tapCount = 0;
         let tapTimer = null;
         document.getElementById('logoBox').addEventListener('click', () => {
@@ -1036,7 +1125,6 @@
             }
         });
 
-        // Загрузка иконки через GitHub API
         document.getElementById('hudFileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -1054,9 +1142,8 @@
 
             const bundleId = document.getElementById('hudAppSelect').value;
             const targetApp = appsData.find(a => a.bundleId === bundleId);
-
             statusEl.style.color = '#ff9f0a';
-            statusEl.innerText = `[INFO] Коммит иконки для ${bundleId}...`;
+            statusEl.innerText = `[INFO] Загрузка иконки для ${bundleId}...`;
 
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -1081,19 +1168,19 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            message: `Update icon for ${bundleId} via Dev HUD`,
+                            message: `Update icon for ${bundleId}`,
                             content: base64Content,
                             sha: sha || undefined
                         })
                     });
 
-                    if (!putRes.ok) throw new Error(`HTTP ${putRes.status}: Ошибка доступа или токена`);
+                    if (!putRes.ok) throw new Error(`HTTP ${putRes.status}`);
 
                     const newUrl = `https://${REPO_OWNER.toLowerCase()}.github.io/${REPO_NAME}/${filePath}?t=${Date.now()}`;
                     if (targetApp) targetApp.icon = newUrl;
 
                     statusEl.style.color = '#30d158';
-                    statusEl.innerText = `[SUCCESS] Иконка для ${bundleId} успешно сохранена!`;
+                    statusEl.innerText = `[SUCCESS] Иконка сохранена!`;
                     renderApps();
                 } catch (err) {
                     statusEl.style.color = '#ff453a';
